@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFiles } from '../features/fileSlice';
+import { setFiles } from '../reducers/fileSlice';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Footer from '../ui/Footers/Footer';
 
 function HomePage(){
     const dispatch = useDispatch();
@@ -51,12 +51,12 @@ function HomePage(){
                 </div>
             </div>
             <div className="container mx-auto p-5">
-                <h1 className="text-2xl font-semibold text-gray-700">Open recent files</h1>
-                <div className="pt-4">
+                <h1 Name="text-2xl font-semibold text-gray-700">Open recent files</h1>
+                <div Name="pt-4">
                     {files['filelist'].map((file) => (
                         <LinkFile key={file} file={file} />
                     ))}
-                    {(files['filelist'].length == 0) && <div className="text-center text-gray-500 mt-2">No recent files found.</div>}
+                    {(files['filelist'].length == 0) && <div Name="text-center text-gray-500 mt-2">No recent files found.</div>}
                 </div>
             </div>
         </div>

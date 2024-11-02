@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, createContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FunctionContext } from './TableProvider';
 import '../../../css/App.css';
-function HoverOptions({ is_hovered, row_index, addRow, is_checked, setIsChecked}) {
-    const [check_value, setCheckValue] = useState(is_checked);
+function HoverOptions({ absolute_position, is_hovered, row_index, addRow, is_checked, setIsChecked}) {
+    const { setCheckedRows } = useContext(FunctionContext);
+    absolute_position = absolute_position || 'top-4 left-4';
+    const check_value = useRef(is_checked);
+    const setCheckValue = (value) => {
+        check_value.current = value;
+    };
     useEffect(() => {
         setCheckValue(is_checked);
     }, [is_checked]);
@@ -40,8 +46,17 @@ function HoverOptions({ is_hovered, row_index, addRow, is_checked, setIsChecked}
         addRow(row_index);
     }
     const toggleIsChecked = () => {
-        setCheckValue((prev) => !prev);
+        console.log(check_value.current);
+        setCheckValue(!check_value.current);
+        console.log(check_value.current);
         setIsChecked((prev) => !prev);
+        setCheckedRows((prev) => {
+            if (check_value.current) {
+                return [...prev, row_index].sort((a, b) => a - b);
+            } else {
+                return prev.filter((index) => index !== row_index).sort((a, b) => a - b);
+            }
+        });
     };
     return (
         <AnimatePresence
@@ -49,23 +64,23 @@ function HoverOptions({ is_hovered, row_index, addRow, is_checked, setIsChecked}
         mode='wait'
         onExitComplete={()=>null}>
         <motion.div 
-            className="absolute top-3 left-0 z-10 p-2 rounded-lg" 
-            style={{ transform: 'translate(-85%, -45%)', width: '100px' }}
+            className={`absolute ${absolute_position} z-10 rounded-lg scale-200`}
+            style={{ width: '100px' }}
             variants={hoverAnimation}
             initial="hidden"
             animate={isOpen ? "visible" : "hidden"}
             exit="exit">
-            <div className="flex flex-row items-center">
+            <div className="flex flex-row gap-1 items-center">
                 <button 
                     type="button" onClick={addRowToTable}
-                    className="button-circle-icon p-1 sm:m-0 mb-1" 
-                    style={{ margin: '0.5rem' }}>
+                    className="button-icon sm:m-0 mb-1" 
+                    style={{ margin: '4px' }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-plus">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
                 </button>
-                <input type="checkbox" className="checkbox-primary" onChange={toggleIsChecked} checked={check_value}/>
+                <input type="checkbox" className="checkbox-primary" onChange={toggleIsChecked} checked={check_value.current}/>
             </div>
         </motion.div> 
         </AnimatePresence>

@@ -5,14 +5,16 @@ import openpyxl
 from flaskwebgui import FlaskUI
 from flask import Flask
 from flask import request, send_from_directory, redirect, url_for, jsonify, send_file
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import re
 number_regex = re.compile(r'^-?\d+(\.\d+)?$')
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 app.json.sort_keys = False
 # Constant variables
-input_folder = 'server\input'
+input_folder = 'input'
 
 # ---------------- Read and Write .xlxs ----------------- #
 def read_xlsx(filename):
@@ -57,7 +59,7 @@ def read_xlsx(filename):
     df = df.fillna('')
     df.columns = [col.strip() if col != 'Unnamed: 1' and isinstance(col,str) else '' for col in df.columns]
     for col in df.select_dtypes(include=['float', 'int']).columns:
-        df[col] = pd.to_numeric(df[col], downcast='integer', errors='coerce').fillna(0).astype(int)
+        df[col] = df[col].astype(str)
     data["General Journal"].append(df.to_dict(orient='records'))
     
     # Read the General Ledger sheet
@@ -97,17 +99,18 @@ def read_xlsx(filename):
                         title = col
                     elif count == 3:
                         account_no = col
-
+           
             table = table.iloc[1:] # Skip the top row (Title and Account No.)
             table = table.fillna('')
             
             table.columns = [col.strip() if col != 'Unnamed: 1' and isinstance(col,str) else '' for col in table.iloc[0]]
             table = table.iloc[1:] # Skip the header row 
 
-            for col in table.select_dtypes(include=['float', 'int']).columns:
-                table[col] = pd.to_numeric(table[col], downcast='integer', errors='coerce').fillna(0).astype(int)
             table['Title'] = title
             table['Account No.'] = account_no
+            for col in table.select_dtypes(include=['float', 'int']).columns:
+                table[col] = table[col].astype(str)
+            
             # Ensure DataFrame columns are unique before converting to dictionary
             if table.columns.duplicated().any():
                 table.columns = [f"{col}_{i}" if table.columns.duplicated()[i] else col for i, col in enumerate(table.columns)]
@@ -132,17 +135,21 @@ def read_xlsx(filename):
         table_contents = []
         if not table.empty:
             table.columns = range(len(table.columns))
-            if len(table_contents) == 1:
+            for index, row in table.iterrows():
+                # try:
+                if row[0] != '':
+                    account_no = str(int(row[0]))
+                else:
+                    account_no = ''
+                name = str(row[1])
+                print(account_no)
+                # except ValueError:
+                #     account_no = row[1]
+                # account_no (key): name (value)
+                table_contents.append({name: account_no})
+            if len(table_contents) <= 1:
                 # If Chart of Accounts has no row content, add a default row
                 table_contents.append({'': ''})
-            for index, row in table.iterrows():
-                try:
-                    account_no = int(row[1])
-                except ValueError:
-                    account_no = row[1]
-                # account_no (key): name (value)
-                table_contents.append({account_no: row[0]})
-
             data["Chart of Accounts"].append(table_contents)
     return data, sheet_widths
 
@@ -161,6 +168,7 @@ def write_xlsx(filename, tables_widths, data):
     # Normalize the widths
     multiplier = 0.8
     for i, table_width in tables_widths.items():
+        table_width = [int(width) if width != None else 0 for width in table_width]
         width_sum = sum(table_width)
         for j, width in enumerate(table_width):
             tables_widths[i][j] = (width / width_sum) * 100 * multiplier
@@ -289,14 +297,14 @@ def homepage():
     return jsonify(filelist=get_filelist())
 @app.route("/<filename>")
 def main(filename):
-    try:
+    # try:
         result = read_xlsx(filename)
         if result is None:
             return jsonify(error="Failed to read the spreadsheet"), 400
         data, sheet_widths = result
         return jsonify(success=True, filename=str(filename), spreadsheet=dict(data), sheet_widths=dict(sheet_widths), filelist=get_filelist())
-    except Exception as e:
-        return jsonify(error=str(e)), 500
+    # except Exception as e:
+    #     return jsonify(error=str(e)), 500
     
 # ----------------- Create, Save, Delete, Rename File -----------------
 @app.route('/create-new-file')
@@ -322,20 +330,23 @@ def create_new_file():
 
 @app.route('/save-data/<filename>', methods=['POST'])
 def save_data(filename):
-    try:
+    # try:
         get_data = request.json  # Get the JSON data from the request
         data = get_data[0]
         table_width = get_data[1]
         write_xlsx(filename, table_width, data)
         return jsonify(success=True)
-    except Exception as e:
-        return jsonify(success=False, message=str(e))
+    # except Exception as e:
+    #     return jsonify(success=False, message=str(e))
 
 @app.route('/rename-data/<new_filename>', methods=['POST'])
 def rename_xlsx(new_filename):
     try:
         old_filename = request.json
         new_filename = secure_filename(new_filename)
+        print(new_filename)
+        if new_filename == 'xlsx' or new_filename == '.xlxs':
+            return jsonify(success=False, message='Invalid file name.')
         # Check if it is already created
         base_filename = new_filename
         new_filepath = os.path.join(input_folder, base_filename)
@@ -365,11 +376,15 @@ def delete_file(filename):
 # ----------------- Download and Upload File -----------------
 @app.route('/download/<filename>')
 def download_xlsx(filename):
-    file_path = os.path.join(input_folder, filename)
-    if os.path.exists(file_path):
-        with open(file_path) as f:
-            data = f.read()
-        return {"data": data }
+    try:
+        file_path = os.path.join(os.path.dirname(__file__), 'input', filename)
+        print(file_path)
+        if os.path.exists(file_path):
+            return send_file(file_path, as_attachment=True)
+        else:
+            return jsonify({"error": "File not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
 
 @app.route("/upload", methods=['POST'])
 def upload():
@@ -394,7 +409,7 @@ def upload():
             read_xlsx(new_filename)
         if new_filename == '':
             return jsonify(success=False, message='Invalid file type. Please upload a .xlsx file.')
-        return jsonify(success=True)
+        return jsonify(success=True, filename=new_filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

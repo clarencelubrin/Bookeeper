@@ -7,7 +7,6 @@ html {
     scroll-behavior: smooth;
 }
 [x-cloak] { display: none !important; }
-
 @layer components {
     .container {
         max-width: 1024px;
@@ -19,19 +18,28 @@ html {
     }
     /* Table components */
     .input-primary{
-        @apply bg-transparent w-full rounded-md focus:outline-none focus:ring focus:ring-pink-300 focus:bg-pink-50 focus:-translate-y-1 focus:shadow-lg focus:scale-110 focus:z-50 transition duration-150 ease-in-out;
+        @apply bg-transparent w-full rounded-md focus:outline-none focus:ring focus:ring-pink-300 focus:bg-pink-50 focus:-translate-y-1 focus:shadow-lg focus:scale-110 transition duration-150 ease-in-out;
+    }
+    .button{
+        @apply sm:px-3 sm:py-2 px-2 py-1 rounded-full;
+    }
+    .button-circle{
+        @apply p-2 rounded-full;
     }
     .button-primary{
-        @apply px-3 py-2 bg-pink-50 focus:outline-none focus:ring focus:ring-pink-300 hover:bg-pink-100 font-semibold text-pink-500 rounded-full;
+        @apply bg-pink-50 focus:outline-none focus:ring focus:ring-pink-300 hover:bg-pink-100 font-semibold text-pink-500;
     }
     .button-violet{
-        @apply px-3 py-2 ms-2 bg-violet-50 focus:outline-none focus:ring focus:ring-violet-300 hover:bg-violet-100 font-semibold text-violet-500 rounded-full;
+        @apply bg-violet-50 focus:outline-none focus:ring focus:ring-violet-300 hover:bg-violet-100 font-semibold text-violet-500;
     }
     .button-purple{
-        @apply px-3 py-2 ms-2 bg-purple-50 focus:outline-none focus:ring focus:ring-purple-300 hover:bg-purple-100 font-semibold text-purple-500 rounded-full;
+        @apply bg-purple-50 focus:outline-none focus:ring focus:ring-purple-300 hover:bg-purple-100 font-semibold text-purple-500;
     }
     .button-blue{
-        @apply px-3 py-2 ms-2 bg-blue-50 focus:outline-none focus:ring focus:ring-blue-300 hover:bg-blue-100 font-semibold text-blue-500 rounded-full;
+        @apply bg-blue-50 focus:outline-none focus:ring focus:ring-blue-300 hover:bg-blue-100 font-semibold text-blue-500;
+    }
+    .table{
+        @apply w-full shadow-sm;
     }
     .table-header{
         @apply bg-gray-50 border-2 border-gray-200;
@@ -40,13 +48,13 @@ html {
         @apply last:border-b-2 border-x-2 border-gray-200 hover:bg-pink-50 transition duration-150 ease-out;
     }
     .table-row-cell{
-        @apply border-r-2 border-gray-200 bg-transparent text-sm text-gray-700; 
+        @apply border-r-2 border-gray-200 bg-transparent text-sm text-gray-700 overflow-visible; 
     }
     .checkbox-primary{
         @apply w-4 h-4 border-2 border-blue-500 accent-pink-500 text-white border-gray-300 rounded checked:opacity-100 opacity-75;
     }
-    .button-circle-icon{
-        @apply place-self-center bg-white shadow-sm hover:bg-pink-200 hover:border-pink-500 border-2 rounded-full 
+    .button-icon{
+        @apply place-self-center bg-white shadow-sm hover:bg-pink-200 hover:border-pink-500 border-2 rounded-md 
     }
     .menu-item{
 

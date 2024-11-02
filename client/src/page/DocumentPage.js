@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { setData } from '../features/dataSlice';
-import { setWidths } from '../features/widthsSlice';
-import { setFiles } from '../features/fileSlice';
+import { setData } from '../reducers/dataSlice';
+import { setWidths } from '../reducers/widthsSlice';
+import { setFiles } from '../reducers/fileSlice';
 import DataSheet from '../components/DataSheet';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Footer from '../ui/Footers/Footer';
 import '../css/App.css';
 
 function DocumentPage() {
@@ -44,6 +44,7 @@ function DocumentPage() {
       <>
         <Navbar />
         <div className='container mx-auto p-5 h-auto min-h-screen'>
+          <div className="h-8"></div>  
           {['General Journal', 'General Ledger'].map((sheet) => (
             <DataSheet sheet={sheet} key={sheet.replace(' ','_')}/>
           ))}

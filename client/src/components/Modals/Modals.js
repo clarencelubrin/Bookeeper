@@ -1,23 +1,37 @@
 import React, { useState } from 'react';
-import '../css/App.css';
-function Modal({modalType, onClickBackdrop}) {
+import { useSelector, useDispatch } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TableProvider } from '../DataSheet/module/TableProvider';
+import ModalTable from './module/ModalTable';
+import '../../css/App.css';
+
+function Modal({showModal, modalType, onClickBackdrop}) {
   return (
-    <Backdrop children={
-      <>
-        {(modalType === "upload") && <UploadContentModal />}
-        {(modalType === "delete") && <DeleteContentModal />}
-      </>
-    } onClick={onClickBackdrop}/>
+    <AnimatePresence initial={false} mode='wait' onExitComplete={()=>null}>
+    {showModal &&
+      <motion.div tabIndex={-1}
+        initial="hidden"
+        animate={showModal ? "visible" : "hidden"}
+        exit="exit"
+        className='bg-gray-50'>
+        <Backdrop onClick={onClickBackdrop}>
+            {(modalType === "upload") && <UploadContentModal />}
+            {(modalType === "delete") && <DeleteContentModal />}
+            {(modalType === "chart-of-accounts") && <ChartOfAccountsContentModal />}
+        </Backdrop> 
+      </motion.div>      
+    }      
+    </AnimatePresence>
   )
 }
 function Backdrop ({children, onClick}){
-  return(
-    <div className="fixed z-40 inset-0 bg-black bg-opacity-50 w-screen h-screen">   
-        <div className="flex z-50 min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0" onClick={onClick}>
-          <div className="bg-white shadow-lg px-4 pb-4 pt-5 rounded-lg sm:p-6 sm:pb-4">
-            <div className="sm:flex sm:items-start">                                                                              
-              {children}
-            </div>
+  return (
+    <div className="fixed z-40 inset-0 bg-black bg-opacity-50 w-screen h-screen">
+      <div className="flex z-50 min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0" onClick={onClick}>
+        <div className="bg-white shadow-lg px-4 pb-4 pt-5 rounded-lg sm:p-6 sm:pb-4" onClick={(e) => e.stopPropagation()}>
+          <div className="sm:flex sm:items-start">
+            {children}
+          </div>
         </div>
       </div>
     </div>
@@ -50,6 +64,7 @@ function UploadContentModal() {
         if (result.success) {
             document.body.style.cursor = 'default';
             alert('Data saved successfully!');
+            window.location.href = `/${result.filename}`;
         } else {
             document.body.style.cursor = 'default';
             alert(result.message);
@@ -119,6 +134,23 @@ function DeleteContentModal(){
       </button>
     </div>
   </div>
+  )
+}
+
+function ChartOfAccountsContentModal(){
+  const data = useSelector(state => state.data)['content'];
+  return(
+    <div className="w-full text-center sm:mt-0 sm:text-left max-w-3xl">
+      <h1 className="text-xl font-bold leading-6 text-gray-900 mb-3" id="modal-title">Chart of Accounts</h1>
+        <div className='grid grid-cols-3 gap-3'>
+          {data['spreadsheet']['Chart of Accounts'].map((table, index) => ( 
+            <TableProvider table_data={table} sheet={'Chart of Accounts'} key={index} table_index={index} className='data-table'> 
+              <ModalTable key={index}
+                className='data-table col-span-1'/>   
+            </TableProvider>
+          ))}
+        </div>
+    </div>
   )
 }
 export default Modal
