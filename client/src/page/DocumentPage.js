@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { setData } from '../reducers/dataSlice';
-import { setWidths } from '../reducers/widthsSlice';
-import { setFiles } from '../reducers/fileSlice';
+import { setData } from '../slices/dataSlice';
+import { setWidths } from '../slices/widthsSlice';
+import { setFiles } from '../slices/fileSlice';
 import DataSheet from '../components/DataSheet';
 import Navbar from '../components/Navbar';
 import Footer from '../ui/Footers/Footer';

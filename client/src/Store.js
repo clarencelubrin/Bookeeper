@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import dataReducer from './reducers/dataSlice';
-import widthsReducer from './reducers/widthsSlice';
-import fileReducer from './reducers/fileSlice';
+import dataReducer from './slices/dataSlice';
+import widthsReducer from './slices/widthsSlice';
+import fileReducer from './slices/fileSlice';
 export const store = configureStore({
     reducer: {
         data: dataReducer,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setWidths } from '../../reducers/widthsSlice';
+import { setWidths } from '../../slices/widthsSlice';
 import { SheetTable } from './module/DataTable';
 import { TableProvider } from './module/TableProvider';
 import '../../css/App.css';
