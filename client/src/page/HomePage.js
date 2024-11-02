@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFiles } from '../reducers/fileSlice';
+import { setFiles } from '../slices/fileSlice';
 import Navbar from '../components/Navbar';
 import Footer from '../ui/Footers/Footer';
 
