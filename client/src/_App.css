@@ -1,0 +1,140 @@
+/* npx tailwindcss -i ./src/_App.css -o ./src/css/App.css --watch */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    scroll-behavior: smooth;
+}
+body{
+    overflow: hidden;
+}
+[x-cloak] { display: none !important; }
+@layer components {
+    .container {
+        max-width: 70vw;
+    }
+    /* Table components */
+    .input-primary{
+        @apply bg-transparent w-full rounded-md focus:outline-none focus:ring focus:ring-pink-300 focus:bg-pink-50 focus:-translate-y-1 focus:shadow-lg focus:scale-110 transition duration-150 ease-in-out;
+    }
+    .button{
+        @apply sm:px-3 sm:py-2 px-2 py-1 rounded-full;
+    }
+    .button-circle{
+        @apply p-2 rounded-full;
+    }
+    .nav-button-circle{
+        @apply p-1 rounded-full;
+    }
+    .nav-button-circle.gray{
+        @apply focus:outline-none hover:shadow-lg hover:border-gray-100 border-2 border-transparent font-semibold text-gray-500 transition duration-100 ease-in-out;
+    }
+    .nav-button-circle.pink{
+        @apply bg-pink-100 focus:outline-none hover:shadow-lg hover:border-pink-300 border-2 border-transparent font-semibold text-pink-500 transition duration-100 ease-in-out;
+    }
+    .button-primary{
+        @apply bg-pink-50 focus:outline-none focus:ring focus:ring-pink-300 hover:bg-pink-100 font-semibold text-pink-500;
+    }
+    .button-violet{
+        @apply bg-violet-50 focus:outline-none focus:ring focus:ring-violet-300 hover:bg-violet-100 font-semibold text-violet-500;
+    }
+    .button-purple{
+        @apply bg-purple-50 focus:outline-none focus:ring focus:ring-purple-300 hover:bg-purple-100 font-semibold text-purple-500;
+    }
+    .button-blue{
+        @apply bg-blue-50 focus:outline-none focus:ring focus:ring-blue-300 hover:bg-blue-100 font-semibold text-blue-500;
+    }
+    .table{
+        @apply w-full shadow-sm;
+    }
+    .table-header{
+        @apply bg-gray-50 border-2 border-gray-200;
+    }
+    .table-row{
+        @apply last:border-b-2 border-x-2 border-gray-200 hover:bg-pink-50 transition duration-150 ease-out;
+    }
+    .table-row-cell{
+        @apply border-r-2 border-gray-200 bg-transparent text-sm text-gray-700 overflow-visible; 
+    }
+    .checkbox-primary{
+        @apply w-4 h-4 border-2 border-blue-500 accent-pink-500 text-white border-gray-300 rounded checked:opacity-100 opacity-75;
+    }
+    .button-icon{
+        @apply place-self-center bg-white shadow-sm hover:bg-pink-200 hover:border-pink-500 border-2 rounded-md 
+    }
+    .navbar{
+        @apply bg-white border-b-2 border-gray-100 fixed top-0 left-0 right-0 z-50;
+    }
+    .menu-item{
+
+    }
+    .title-h1{
+
+    }
+    .title-h2{
+
+    }   
+    .subtitle{
+
+    }
+    .text-primary{
+
+    }   
+}
+.navbar {
+    -webkit-app-region: drag;
+    -webkit-scrollbar: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+.navbar-item{
+    -webkit-app-region: none;
+}
+.dropdown-icon {
+    width: 16px;
+    height: 16px;
+    min-height: 16px;
+    min-width: 16px;
+    margin-right: 6px;
+    margin-top: 2px;
+}
+/* Style for resizable columns */
+.resizable {
+    position: relative;
+    /* overflow: hidden; */
+}
+
+.resizable th, .resizable td {
+    position: relative;
+}
+
+.resizer {
+    transition: all 0.5s ease-in-out;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 1;
+    border-right: 4px solid;
+    border-color: #f472b500;
+}
+.resizer:hover, .resizer:active {
+    border-right: 4px solid;
+    border-color: #f472b6;
+}
+/* Input number */
+/* Chrome */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
