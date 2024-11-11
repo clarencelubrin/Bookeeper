@@ -6,15 +6,13 @@
 html {
     scroll-behavior: smooth;
 }
+body{
+    overflow: hidden;
+}
 [x-cloak] { display: none !important; }
 @layer components {
     .container {
-        max-width: 1024px;
-    }
-    @media screen and (max-width: 1124px) {
-        .container {
-            max-width: 80vw;
-        }
+        max-width: 70vw;
     }
     /* Table components */
     .input-primary{
@@ -25,6 +23,15 @@ html {
     }
     .button-circle{
         @apply p-2 rounded-full;
+    }
+    .nav-button-circle{
+        @apply p-1 rounded-full;
+    }
+    .nav-button-circle.gray{
+        @apply focus:outline-none hover:shadow-lg hover:border-gray-100 border-2 border-transparent font-semibold text-gray-500 transition duration-100 ease-in-out;
+    }
+    .nav-button-circle.pink{
+        @apply bg-pink-100 focus:outline-none hover:shadow-lg hover:border-pink-300 border-2 border-transparent font-semibold text-pink-500 transition duration-100 ease-in-out;
     }
     .button-primary{
         @apply bg-pink-50 focus:outline-none focus:ring focus:ring-pink-300 hover:bg-pink-100 font-semibold text-pink-500;
@@ -56,6 +63,9 @@ html {
     .button-icon{
         @apply place-self-center bg-white shadow-sm hover:bg-pink-200 hover:border-pink-500 border-2 rounded-md 
     }
+    .navbar{
+        @apply bg-white border-b-2 border-gray-100 fixed top-0 left-0 right-0 z-50;
+    }
     .menu-item{
 
     }
@@ -72,9 +82,22 @@ html {
 
     }   
 }
+.navbar {
+    -webkit-app-region: drag;
+    -webkit-scrollbar: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+.navbar-item{
+    -webkit-app-region: none;
+}
 .dropdown-icon {
     width: 16px;
     height: 16px;
+    min-height: 16px;
+    min-width: 16px;
     margin-right: 6px;
     margin-top: 2px;
 }

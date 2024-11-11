@@ -2,19 +2,19 @@ import os
 import xlsxwriter
 import pandas as pd
 import openpyxl
-from flaskwebgui import FlaskUI
 from flask import Flask
 from flask import request, send_from_directory, redirect, url_for, jsonify, send_file
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import re
+import json
 number_regex = re.compile(r'^-?\d+(\.\d+)?$')
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 app.json.sort_keys = False
 # Constant variables
-input_folder = 'input'
+input_folder = '../server/input'
 
 # ---------------- Read and Write .xlxs ----------------- #
 def read_xlsx(filename):
@@ -23,6 +23,7 @@ def read_xlsx(filename):
         Returns: data (dict), sheet_widths (dict)
     '''
     filename = os.path.join(input_folder, filename)
+    print(os.path.exists(filename))
     if not os.path.exists(filename):
         return
     try:
@@ -142,7 +143,6 @@ def read_xlsx(filename):
                 else:
                     account_no = ''
                 name = str(row[1])
-                print(account_no)
                 # except ValueError:
                 #     account_no = row[1]
                 # account_no (key): name (value)
@@ -196,11 +196,13 @@ def write_xlsx(filename, tables_widths, data):
             for j, (key, value) in enumerate(row.items()):
                 other_values = [str(v).strip() for k, v in row.items() if k != 'DESCRIPTION']
                 style = {}
+                value = str(value)
                 value_write = value
+                
                 if j == len(row) - 1:                    
                     style = edge_cell
                 else:
-                    style = {**center_cell}                  
+                    style = {**center_cell} 
                     value_write = value.replace('\t', '     ')
                     if all(v == '' for v in other_values):
                         style['italic'] = True
@@ -239,6 +241,7 @@ def write_xlsx(filename, tables_widths, data):
                 if key == 'Title' or key == 'Account No.':
                     continue
                 style = {}
+                value = str(value)
                 value_write = value
                 if j == len(row) - 3:                  
                     style = edge_cell
@@ -309,42 +312,44 @@ def main(filename):
 # ----------------- Create, Save, Delete, Rename File -----------------
 @app.route('/create-new-file')
 def create_new_file():
-    new_filename = 'New_Spreadsheet' + '.xlsx'
-    if not os.path.exists(input_folder):
-        os.makedirs(input_folder)
-    # Check if it is already created
-    base_filename = 'New_Spreadsheet'
-    new_filepath = os.path.join(input_folder, base_filename + '.xlsx')
-    i = 1
-    while os.path.exists(new_filepath):
-        new_filename = f'{base_filename}_{i}.xlsx'
-        new_filepath = os.path.join(input_folder, new_filename)
-        i += 1
-        
-    data = {'General Journal': [[{header: '' for header in ['DATE', '', 'DESCRIPTION', 'P/R', 'DEBIT', 'CREDIT']}]],
-            'General Ledger': [[{header: '' for header in ['DATE', '', 'DESCRIPTION', 'P/R', 'DEBIT', 'CREDIT', 'BALANCE', 'Title', 'Account No.']}]],
-            'Chart of Accounts': [[{title: ''}, {'': ''}] for title in ['Assets', 'Liabilities', 'Equity', 'Revenue', 'Expenses']]}
-    write_xlsx(new_filename, {'General Journal':[10, 10, 40, 10, 10, 10], 'General Ledger': [10, 10, 40, 10, 10, 10, 10, 10, 10]}, data)
+    try:
+        new_filename = 'New_Spreadsheet' + '.xlsx'
+        if not os.path.exists(input_folder):
+            os.makedirs(input_folder)
+        # Check if it is already created
+        base_filename = 'New_Spreadsheet'
+        new_filepath = os.path.join(input_folder, base_filename + '.xlsx')
+        i = 1
+        while os.path.exists(new_filepath):
+            new_filename = f'{base_filename}_{i}.xlsx'
+            new_filepath = os.path.join(input_folder, new_filename)
+            i += 1
+            
+        data = {'General Journal': [[{header: '' for header in ['DATE', '', 'DESCRIPTION', 'P/R', 'DEBIT', 'CREDIT']}]],
+                'General Ledger': [[{header: '' for header in ['DATE', '', 'DESCRIPTION', 'P/R', 'DEBIT', 'CREDIT', 'BALANCE', 'Title', 'Account No.']}]],
+                'Chart of Accounts': [[{title: ''}, {'': ''}] for title in ['Assets', 'Liabilities', 'Equity', 'Revenue', 'Expenses']]}
+        write_xlsx(new_filename, {'General Journal':[10, 10, 40, 10, 10, 10], 'General Ledger': [10, 10, 40, 10, 10, 10, 10, 10, 10]}, data)
 
-    return redirect(url_for('main', filename=new_filename))
+        return jsonify(success=True, filename=str(new_filename))
+    except Exception as e:
+        return jsonify(success=False, message=str(e))
 
 @app.route('/save-data/<filename>', methods=['POST'])
 def save_data(filename):
-    # try:
+    try:
         get_data = request.json  # Get the JSON data from the request
         data = get_data[0]
         table_width = get_data[1]
         write_xlsx(filename, table_width, data)
         return jsonify(success=True)
-    # except Exception as e:
-    #     return jsonify(success=False, message=str(e))
+    except Exception as e:
+        return jsonify(success=False, message=str(e))
 
 @app.route('/rename-data/<new_filename>', methods=['POST'])
 def rename_xlsx(new_filename):
     try:
         old_filename = request.json
         new_filename = secure_filename(new_filename)
-        print(new_filename)
         if new_filename == 'xlsx' or new_filename == '.xlxs':
             return jsonify(success=False, message='Invalid file name.')
         # Check if it is already created
@@ -363,7 +368,7 @@ def rename_xlsx(new_filename):
     except Exception as e:
         return jsonify(success=False, message=str(e))
 
-@app.route('/delete-file/<filename>', methods=['POST'])
+@app.route('/delete-file/<filename>', methods=['DELETE'])
 def delete_file(filename):
     try:
         filepath = os.path.join(input_folder, filename)
@@ -378,7 +383,6 @@ def delete_file(filename):
 def download_xlsx(filename):
     try:
         file_path = os.path.join(os.path.dirname(__file__), 'input', filename)
-        print(file_path)
         if os.path.exists(file_path):
             return send_file(file_path, as_attachment=True)
         else:
@@ -411,6 +415,8 @@ def upload():
             return jsonify(success=False, message='Invalid file type. Please upload a .xlsx file.')
         return jsonify(success=True, filename=new_filename)
 
+# print(json.dumps(read_xlsx('Showcase.xlsx'), indent=1))
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
 
