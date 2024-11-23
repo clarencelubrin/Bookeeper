@@ -9,6 +9,7 @@ import DocumentPage from './page/DocumentPage';
 import Navbar from './components/Navbar';
 import Footer from './ui/Footers/Footer';
 import Sidebar from './components/Sidebar';
+import ThemeProvider from './theme/ThemeProvider';
 import { RootState } from './Store';
 import './css/App.css';
 function App(){
@@ -38,7 +39,7 @@ function App(){
   }, []);
 
   return(
-    <>
+    <ThemeProvider current_theme='cute-theme'>
       {route === '/' ? <Navbar show_navlink={false} show_titletexbox={false} /> : <Navbar />} 
       {route === '/' ? 
       <div className='grid h-screen bg-white'>
@@ -56,7 +57,7 @@ function App(){
         </div>
       </>
       }         
-    </>
+    </ThemeProvider>
   )
 }
 

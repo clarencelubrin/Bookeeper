@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../Store';
 import axios from 'axios';
-
+import { DefaultTheme } from 'interfaces/ThemeInterfaces';
 import '../css/App.css';
 
 interface RouteProps {
@@ -10,11 +10,10 @@ interface RouteProps {
     parameters: any;
     children: React.ReactElement;
 }
-
+let theme = DefaultTheme;
 export function Route({ routeType, parameters = null, children }: RouteProps) {
     const data = useSelector((state: RootState) => state.data)['present']['content'];
     const widths = useSelector((state: RootState) => state.widths)['content'];
-
     const handleOnClick = () => {
         switch (routeType) {
             case 'save':
@@ -59,7 +58,7 @@ export const saveDocument = async (filename: string, data: any, widths: any) => 
     const result = await response.json();
     if (result.success) {
         document.body.style.cursor = 'default';
-        window.ipcRenderer.send('show-alert', { title: 'Success! ⸜(｡˃ ᵕ ˂ )⸝♡', message: 'Data saved successfully' });
+        window.ipcRenderer.send('show-alert', { title: theme.text.ALERT_SUCCESS, message: 'Data saved successfully' });
         window.location.href = `/${filename.replace(' ', '_')}`;
     } else {
         document.body.style.cursor = 'default';
@@ -67,7 +66,7 @@ export const saveDocument = async (filename: string, data: any, widths: any) => 
         if (result.message.includes('Access is denied')) {
             recomendation = 'Please check if the file is open in another program.';
         }
-        window.ipcRenderer.send('show-alert', { title: 'Error ｡°(°.◜ᯅ◝°)°｡', message: result.message + "\n\n" + recomendation });
+        window.ipcRenderer.send('show-alert', { title: theme.text.ALERT_ERROR, message: result.message + "\n\n" + recomendation });
     }
 }
 export const renameDocument = async (filename:string) => {
@@ -82,7 +81,7 @@ export const renameDocument = async (filename:string) => {
     const result = await response.json();
     if (result.success) {
         document.body.style.cursor = 'default';
-        window.ipcRenderer.send('show-alert', { title: 'Success! ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧', message: 'Data saved successfully' });
+        window.ipcRenderer.send('show-alert', { title: theme.text.ALERT_SUCCESS_VAR_1, message: 'Data saved successfully' });
         window.location.href = `/${filename.replace(' ', '_')}`;
     } else {
         document.body.style.cursor = 'default';
@@ -90,7 +89,7 @@ export const renameDocument = async (filename:string) => {
         if (result.message.includes('Access is denied')) {
             recomendation = 'Please check if the file is open in another program.';
         }
-        window.ipcRenderer.send('show-alert', { title: 'Error ｡°(°.◜ᯅ◝°)°｡', message: result.message + "\n\n" + recomendation });
+        window.ipcRenderer.send('show-alert', { title: theme.text.ALERT_ERROR_VAR_1, message: result.message + "\n\n" + recomendation });
         alert();
     }
 }
@@ -135,11 +134,11 @@ export const deleteDocument = async (filename: string) => {
     document.body.style.cursor = 'wait';
     axios.delete(`/api/delete-file/${filename.replace(' ', '_')}`)
     .then(()=> {
-        window.ipcRenderer.send('show-alert', { title: 'Success! ｡^‿^｡', message: 'File deleted successfully!' });
+        window.ipcRenderer.send('show-alert', { title: theme.text.ALERT_SUCCESS_VAR_2, message: 'File deleted successfully!' });
         window.location.href = '/';
     })
     .catch(error => {
-        window.ipcRenderer.send('show-alert', { title: 'Error (ᵕ—ᴗ—)', message: error });
+        window.ipcRenderer.send('show-alert', { title: theme.text.ALERT_ERROR_VAR_1, message: error });
     })
     .finally(() => {
         document.body.style.cursor = 'default';

@@ -1,3 +1,6 @@
+
+import { MutableRefObject } from 'react';
+
 export interface FunctionContextType {
     updateCell: (rowIndex: number, key: string, value: string) => void;
     addRow: (row_index: number) => void;
@@ -7,10 +10,11 @@ export interface FunctionContextType {
     addDictRow: (row_index: number) => void;
     setCheckedRows: React.Dispatch<React.SetStateAction<number[]>>;
     setSheetWidths: React.Dispatch<React.SetStateAction<number[]>>;
-    inputsRef: React.MutableRefObject<Object>;
+    inputsRef: MutableRefObject<inputsRefType>;
     focusInput: (row_index: number, cell_index: number) => void;
 }
 
+export type inputsRefType = HTMLInputElement[][];
 export interface PropContextType {
     table_data: any;
     sheet: string;
@@ -36,7 +40,7 @@ export const defaultFunctionContext: FunctionContextType = {
     addDictRow: () => {},
     setCheckedRows: () => [],
     setSheetWidths: () => [],
-    inputsRef: {current: {}},
+    inputsRef: { current: [] },
     focusInput: () => {},
 };
 

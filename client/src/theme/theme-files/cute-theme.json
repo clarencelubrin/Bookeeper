@@ -1,0 +1,16 @@
+{
+    "text": {
+        "TITLE": "Bookeeper ⋆౨ৎ˚⟡˖ ࣪",
+        "ALERT_SUCCESS": "Success! ⸜(｡˃ ᵕ ˂ )⸝♡",
+        "ALERT_SUCCESS_VAR_1": "Success! ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧",
+        "ALERT_SUCCESS_VAR_2": "Success! ｡^‿^｡",
+        "ALERT_ERROR": "Error ｡°(°.◜ᯅ◝°)°｡",
+        "ALERT_ERROR_VAR_1": "Error (ᵕ—ᴗ—)"
+    },
+    "styles": {
+        "primaryColor": "pink",
+        "secondaryColor": "violet",
+        "tertiaryColor": "purple"
+    }
+}
+

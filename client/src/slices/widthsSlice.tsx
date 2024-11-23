@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { widthsSliceInterface } from 'interfaces/widthsSliceInterface';
 
-const initialState = {
-    content: null,
+const initialState: widthsSliceInterface = {
+    content: {},
 };
 
 export const widthsSlice = createSlice({

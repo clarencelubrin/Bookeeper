@@ -72,9 +72,7 @@ function DocumentPage({className, currentSheet}: DocumentPageProps) {
     }, [tableElement, xlxs_width]);
 
     // Loading
-    console.log(data, files);
     if (!data || !data['spreadsheet'] || !files || Object.keys(files).length === 0) {
-      console.log('loading');
       return <Loading />;
     }
 

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext, createContext, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect, useContext, useRef } from 'react';
+import { useSelector } from 'react-redux';
 // import { setData } from '../../../slices/dataSlice';
 // Module imports
 import Resizer from './Resizer';
@@ -14,6 +14,7 @@ import { Table, TableHead, TableBody, HeaderRow, Row, HeaderCell, Cell } from '.
 import '../../../css/App.css';
 // Contexts
 import { FunctionContext, PropContext } from './TableProvider';
+import { FunctionContextType } from 'interfaces/tableProviderInterface';
 
 export function SheetTable(){
     const { addRow, deleteRow, addDataTable } = useContext(FunctionContext);
@@ -24,7 +25,7 @@ export function SheetTable(){
         - Pass the table data then process by the table script and then 
           return the updated table data and style
     */
-    const out = tableScripts(sheet, table_data, table_index, data);
+    const out = tableScripts(sheet, table_data, data);
     const updated_table_data = out.table_data;
     const updated_table_style = out.table_style;
     return(
@@ -68,10 +69,17 @@ function DataTableHeader() {
         </HeaderRow>
     );
 }
-function DataTableRow({ row_data_values, row_style, row_index }) {
+
+interface DataTableRowProps {
+    row_data_values: string[][];
+    row_style: string[];
+    row_index: number;
+}
+
+function DataTableRow({ row_data_values, row_style, row_index }: DataTableRowProps) {
     const { setCheckedRows } = useContext(FunctionContext);
     const { table_data } = useContext(PropContext);
-    const data = useSelector((state:RootState) => state.data)['present']['content'];
+    // const data = useSelector((state:RootState) => state.data)['present']['content'];
     // Handle hover events
     const [is_hovered, setIsHovered] = useState(false);
     const [is_checked, setIsChecked] = useState(false);
@@ -97,38 +105,59 @@ function DataTableRow({ row_data_values, row_style, row_index }) {
         </Row>
     );
 }
-function DataTableCell({ value, column, style, row_index, cell_index, is_hover, is_checked, setIsChecked }) {
-    const { addRow, updateCell, inputsRef, focusInput } = useContext(FunctionContext);
-    const { table_data, sheet } = useContext(PropContext);
 
-    const inputRef = useRef(null); // Define a ref for the individual input
+interface DataTableCellProps {
+    value: string;
+    column: string;
+    style: string;
+    row_index: number;
+    cell_index: number;
+    is_hover: boolean;
+    is_checked: boolean;
+    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function DataTableCell({ value, column, style, row_index, cell_index, is_hover, is_checked, setIsChecked } : DataTableCellProps) {
+    const { addRow, updateCell, inputsRef, focusInput } = useContext<FunctionContextType>(FunctionContext);
+    const { table_data } = useContext(PropContext);
+
+    const inputRef = useRef(); // Define a ref for the individual input
     // Register this tableinput to the inputsRef
     useEffect(() => {
         // Initialize the structure for inputsRef if it doesn’t exist
-       if (!inputsRef.current) {
-           inputsRef.current = {};
-       }
-       if (!inputsRef.current[row_index]) {
-           inputsRef.current[row_index] = [];
-       }
-       inputsRef.current[row_index][cell_index] = inputRef.current;
-    }, [row_index, cell_index]);
+        if (!inputsRef.current) {
+            inputsRef.current = [];
+        }
+        // Initialize the structure for the current row if it doesn’t exist
+        if (!inputsRef.current[row_index]) {
+            inputsRef.current[row_index] = [];            
+        }
+        // Register the inputRef to the inputsRef if it is not undefined
+        if (inputRef.current) {
+            inputsRef.current[row_index][cell_index] = inputRef.current;
+        }
+       
+    }, [row_index, cell_index, inputRef.current]);
 
-   const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         updateCell(row_index, column, e.target.value);
-   };
-   const handleKeyDown = (e) => {
-       if (e.key === 'Enter') {            
-           if (cell_index === Object.keys(table_data[row_index]).filter(key => key !== 'Title' && key !== 'Account No.').length - 1 && inputsRef.current[row_index + 1]) {
-               focusInput(row_index + 1, 0);
-               return;
-           } else if (inputsRef.current[row_index] && inputsRef.current[row_index][cell_index + 1]) {
-               focusInput(row_index, cell_index + 1);
-           } else {
-               addRow(row_index);
-           }
-       }
-   };
+    };
+    interface HandleKeyDownProps {
+        key: string;
+    }
+
+    const handleKeyDown = (e: HandleKeyDownProps) => {
+        if (e.key === 'Enter') {            
+            if (inputsRef.current && cell_index === Object.keys(table_data[row_index]).filter(key => key !== 'Title' && key !== 'Account No.').length - 1 && inputsRef.current[row_index + 1]) {
+                focusInput(row_index + 1, 0);
+                return;
+            } else if (inputsRef.current && inputsRef.current[row_index] && inputsRef.current[row_index][cell_index + 1]) {
+                focusInput(row_index, cell_index + 1);
+            } else {
+                addRow(row_index);
+            }
+        }
+    };
     return (
         <Cell>
             <TableInput input_type="input" key={cell_index} inputRef={inputRef} value={value}
@@ -140,7 +169,7 @@ function DataTableCell({ value, column, style, row_index, cell_index, is_hover, 
     );
 }
 
-function DataTableSubtitle({table_index}) {
+function DataTableSubtitle({table_index}: {table_index: number}) {
     const { table_data } = useContext(PropContext);
     const { updateCell } = useContext(FunctionContext);
     return (

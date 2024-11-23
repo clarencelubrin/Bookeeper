@@ -5,7 +5,7 @@ import path from 'node:path'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
+const fs = require('fs');
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -39,7 +39,7 @@ function createWindow() {
     },
   })
   win.setMenuBarVisibility(false);
-  win.webContents.openDevTools();
+  
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
@@ -48,6 +48,7 @@ function createWindow() {
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
+    win.webContents.openDevTools();
   } else {
     // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))
@@ -78,7 +79,7 @@ ipcMain.on('close-window', () => {
     }
 });
 
-ipcMain.on('show-alert', (event, { title, message }) => {
+ipcMain.on('show-alert', (_, { title, message }) => {
   dialog.showMessageBox({
       type: 'info',
       title: title,
@@ -86,6 +87,29 @@ ipcMain.on('show-alert', (event, { title, message }) => {
       buttons: ['OK']
   });
 });
+
+ipcMain.on('read-json-file', (event, { filename }) => {
+  const result = readJSONFile(filename);
+  if (result) {
+    event.reply('read-json-file-response', result);
+  } else {
+    event.reply('read-json-file-response', null);
+  }
+});
+
+function readJSONFile(filename: string) {
+  const filePath = path.join(app.getAppPath(), './src', `./theme/theme-files/${filename}.json`);
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    const jsonData = JSON.parse(data);
+    console.log(filePath, jsonData); // Access the JSON data here
+    return jsonData;
+  } catch (err) {
+    console.error('Error reading JSON file:', err);
+    return null;
+  }
+}
+
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
-const useKeyPress = (keys, callback, node = null) => {
+const useKeyPress = (keys: string[], callback: (event: KeyboardEvent) => void, node = null) => {
   // Use a ref to store the latest callback
   const callbackRef = useRef(callback);
   useLayoutEffect(() => {
@@ -8,10 +8,14 @@ const useKeyPress = (keys, callback, node = null) => {
   });
 
   // Define key press handler
+  interface KeyPressEvent extends KeyboardEvent {
+    getModifierState(key: string): boolean;
+  }
+
   const handleKeyPress = useCallback(
-    (event) => {
+    (event: KeyPressEvent) => {
       // Check if all specified keys are pressed
-      const allKeysPressed = keys.every((key) => {
+      const allKeysPressed = keys.every((key: string) => {
         if (['Control', 'Shift', 'Alt', 'Meta'].includes(key)) {
           return event.getModifierState(key);
         }

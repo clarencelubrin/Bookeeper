@@ -11,8 +11,6 @@ function HomePage(){
       axios.get('api/homepage')
           .then((response) => {
               // Axios parses JSON automatically, so you don't need `response.json()`
-              console.log("IM HEREE");
-              console.log(response.data);
   
               const fetchedData = response.data;
               const files = {
@@ -56,7 +54,6 @@ function HomePage(){
               <h1 className="text-2xl font-semibold text-gray-700">Open recent files</h1>
               <div className="pt-4">
                   {files && files['filelist'].map((file: string) => (
-                    console.log(file, "this is the file from homepage"),
                       <LinkFile key={file} file={file} />
                   ))}
                   {(files['filelist'].length == 0) && <div className="text-center text-gray-500 mt-2">No recent files found.</div>}

@@ -1,7 +1,4 @@
-import React from 'react'
 import { createPortal } from 'react-dom';
-import PropTypes from 'prop-types'
-
 const loadingRoot = document.querySelector('#root') as HTMLElement;
 
 function Loading() {

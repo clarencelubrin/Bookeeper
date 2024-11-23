@@ -1,6 +1,6 @@
-import React from 'react'
 
-function AddButtonCircle({onClick}) {
+type onClickType = {onClick: () => void};
+function AddButtonCircle({onClick}: onClickType) {
   return (
     <button className='button-circle me-2 button-primary' onClick={onClick}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-plus">
@@ -10,7 +10,7 @@ function AddButtonCircle({onClick}) {
     </button>
   )
 }
-function AddTableButtonCircle({onClick}){
+function AddTableButtonCircle({onClick}: onClickType){
     return(
         <button className='button-circle me-2 button-violet' onClick={onClick}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-table">
@@ -19,7 +19,7 @@ function AddTableButtonCircle({onClick}){
         </button>
     )
 }
-function DeleteButtonCircle({onClick}){
+function DeleteButtonCircle({onClick}: onClickType){
     return(
         <button className='button-circle me-2 button-purple' onClick={onClick}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-trash-2">
@@ -31,7 +31,7 @@ function DeleteButtonCircle({onClick}){
     )
 }
 
-function ButtonTrayContainer({children}){
+function ButtonTrayContainer({children}: {children: React.ReactNode}){
     return(
         <div className="pt-3 mb-1 text-sm">
             {children}

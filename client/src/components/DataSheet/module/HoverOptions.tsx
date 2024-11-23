@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext, useRef } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FunctionContext } from './TableProvider';
 import '../../../css/App.css';
@@ -16,7 +16,7 @@ function HoverOptions({ absolute_position, is_hovered, row_index, addRow, is_che
     const { setCheckedRows } = useContext(FunctionContext);
     absolute_position = absolute_position || 'top-4 left-4';
     const check_value = useRef(is_checked);
-    const setCheckValue = (value) => {
+    const setCheckValue = (value: boolean) => {
         check_value.current = value;
     };
     useEffect(() => {

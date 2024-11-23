@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fileSliceInterface } from 'interfaces/slice-interfaces/fileSliceInterface';
+import { fileSliceInterface } from 'interfaces/fileSliceInterface';
 
 const initialState: fileSliceInterface = {
     content: {},

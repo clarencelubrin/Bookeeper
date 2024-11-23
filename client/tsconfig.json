@@ -20,9 +20,10 @@
       "css/*": ["./src/css/*"],
       "interfaces/*": ["./src/interfaces/*"],
       "pages/*": ["./src/pages/*"],
-      "scripts/*": ["./scripts/*"],
+      "scripts/*": ["./src/scripts/*"],
       "slices/*": ["./src/slices/*"],
       "ui/*": ["./src/ui/*"],
+      "theme/*": ["./src/theme/*"],
     },
 
     /* Linting */

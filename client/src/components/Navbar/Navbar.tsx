@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef  } from 'react';
+import React, { useState, useEffect, useRef, useContext  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
-import Undo from '../../scripts/Undo';
-import Redo from '../../scripts/Redo';
+import Undo from 'scripts/Undo';
+import Redo from 'scripts/Redo';
+import { RootState } from 'src/Store';
 import { Route } from '../Route';
 import Modal from '../Modals';
 import WindowControlButtons from './module/WindowControlButtons';
-import { RootState } from '../../Store';
-import { fileSliceInterface } from 'interfaces/slice-interfaces/fileSliceInterface';
-import '../../css/App.css';
+import { fileSliceInterface } from 'src/interfaces/fileSliceInterface';
+import { ThemeContext } from 'theme/ThemeProvider';
+import 'css/App.css';
 
 interface NavbarProps {
     show_navlink?: boolean;
@@ -18,7 +19,7 @@ interface NavbarProps {
 
 function Navbar({ show_navlink = true, show_titletexbox = true, show_dropdown = true }: NavbarProps){   
     const [is_dropdown_open, setIsDropdownOpen] = useState(false);
-
+    const { theme } = useContext(ThemeContext);
     const menuRef = useRef<HTMLDivElement>(null);
     
     useEffect(() => {
@@ -55,8 +56,8 @@ function Navbar({ show_navlink = true, show_titletexbox = true, show_dropdown = 
                     <DropdownMenu is_open={is_dropdown_open}/>
                 </div>}
                 <div className='ms-3 space-x-8'>
-                    <a href="/" className="navbar-item text-pink-500 inline-flex items-center text-wrap sm:max-w-full text-center text-lg font-bold">
-                        Bookeeper ⋆౨ৎ˚⟡˖ ࣪
+                    <a href="/" className={`navbar-item text-${theme.styles.primaryColor}-500 inline-flex items-center text-wrap sm:max-w-full text-center text-lg font-bold`}>
+                        {theme.text.TITLE}
                     </a>
                 </div>
             </div>                
@@ -272,7 +273,7 @@ function DropdownMenuButton({onClick = ()=>{}}){
         onClick();
     }
     return (
-        <button type="button" className="navbar-item ms-2 me-1 mt-1" onClick={handleOnClick}>
+        <button type="button" className="navbar-item ms-2 me-1 mt-2" onClick={handleOnClick}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
         </button>      
     )

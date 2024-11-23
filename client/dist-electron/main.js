@@ -1,79 +1,66 @@
-import { ipcMain, dialog, app, BrowserWindow } from "electron";
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-createRequire(import.meta.url);
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path.join(__dirname, "..");
-const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
-const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
-let win;
-function createWindow() {
-  win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC || "", "electron-vite.svg"),
+import { ipcMain as t, dialog as f, app as r, BrowserWindow as c } from "electron";
+import { createRequire as w } from "node:module";
+import { fileURLToPath as h } from "node:url";
+import o from "node:path";
+const u = w(import.meta.url), d = o.dirname(h(import.meta.url)), R = u("fs");
+process.env.APP_ROOT = o.join(d, "..");
+const l = process.env.VITE_DEV_SERVER_URL, O = o.join(process.env.APP_ROOT, "dist-electron"), m = o.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = l ? o.join(process.env.APP_ROOT, "public") : m;
+let e;
+function p() {
+  e = new c({
+    icon: o.join(process.env.VITE_PUBLIC || "", "electron-vite.svg"),
     width: 800,
     height: 600,
     minWidth: 800,
     minHeight: 600,
-    frame: false,
+    frame: !1,
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs")
+      preload: o.join(d, "preload.mjs")
     }
-  });
-  win.setMenuBarVisibility(false);
-  win.webContents.openDevTools();
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
-  });
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-  } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
-  }
+  }), e.setMenuBarVisibility(!1), e.webContents.on("did-finish-load", () => {
+    e == null || e.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+  }), l ? (e.loadURL(l), e.webContents.openDevTools()) : e.loadFile(o.join(m, "index.html"));
 }
-ipcMain.on("minimize-window", () => {
-  if (win) {
-    win.minimize();
-  }
+t.on("minimize-window", () => {
+  e && e.minimize();
 });
-ipcMain.on("maximize-window", () => {
-  if (win) {
-    if (win.isMaximized()) {
-      win.restore();
-    } else {
-      win.maximize();
-    }
-  }
+t.on("maximize-window", () => {
+  e && (e.isMaximized() ? e.restore() : e.maximize());
 });
-ipcMain.on("close-window", () => {
-  if (win) {
-    win.close();
-  }
+t.on("close-window", () => {
+  e && e.close();
 });
-ipcMain.on("show-alert", (event, { title, message }) => {
-  dialog.showMessageBox({
+t.on("show-alert", (s, { title: i, message: n }) => {
+  f.showMessageBox({
     type: "info",
-    title,
-    message,
+    title: i,
+    message: n,
     buttons: ["OK"]
   });
 });
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-    win = null;
-  }
+t.on("read-json-file", (s, { filename: i }) => {
+  const n = _(i);
+  n ? s.reply("read-json-file-response", n) : s.reply("read-json-file-response", null);
 });
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+function _(s) {
+  const i = o.join(r.getAppPath(), "./src", `./theme/theme-files/${s}.json`);
+  try {
+    const n = R.readFileSync(i, "utf8"), a = JSON.parse(n);
+    return console.log(i, a), a;
+  } catch (n) {
+    return console.error("Error reading JSON file:", n), null;
   }
+}
+r.on("window-all-closed", () => {
+  process.platform !== "darwin" && (r.quit(), e = null);
 });
-app.whenReady().then(createWindow);
+r.on("activate", () => {
+  c.getAllWindows().length === 0 && p();
+});
+r.whenReady().then(p);
 export {
-  MAIN_DIST,
-  RENDERER_DIST,
-  VITE_DEV_SERVER_URL
+  O as MAIN_DIST,
+  m as RENDERER_DIST,
+  l as VITE_DEV_SERVER_URL
 };

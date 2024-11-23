@@ -1,6 +1,6 @@
-import React from 'react';
+type onClickType = {onClick: () => void};
 
-export function MinimizeButton({onClick}) {
+export function MinimizeButton({onClick}: onClickType) {
     return (
       <button className='nav-button-circle gray me-2' onClick={onClick}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-minus">
@@ -9,7 +9,7 @@ export function MinimizeButton({onClick}) {
       </button>
     )
 }
-export function WindowButton({onClick}) {
+export function WindowButton({onClick}: onClickType) {
     return (
       <button className='nav-button-circle gray me-2' onClick={onClick}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-square">
@@ -18,7 +18,7 @@ export function WindowButton({onClick}) {
       </button>
     )
 }
-export function ExitButton({onClick}) {
+export function ExitButton({onClick}: onClickType) {
     return (
       <button className='nav-button-circle pink me-2' onClick={onClick}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
