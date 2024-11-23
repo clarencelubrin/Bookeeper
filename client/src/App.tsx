@@ -1,17 +1,17 @@
 import { useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { saveDocument } from './components/Route';
-import Undo from './scripts/Undo';
-import Redo from './scripts/Redo';
-import useKeyPress from './scripts/useKeyPress';
-import HomePage from './page/HomePage';
-import DocumentPage from './page/DocumentPage';
-import Navbar from './components/Navbar';
-import Footer from './ui/Footers/Footer';
-import Sidebar from './components/Sidebar';
-import ThemeProvider from './theme/ThemeProvider';
+import { saveDocument } from 'components/Route';
+import Undo from 'scripts/Undo';
+import Redo from 'scripts/Redo';
+import useKeyPress from 'scripts/useKeyPress';
+import HomePage from 'page/HomePage';
+import DocumentPage from 'page/DocumentPage';
+import Navbar from 'components/Navbar';
+import Footer from 'ui/Footers/Footer';
+import Sidebar from 'components/Sidebar';
+import ThemeProvider from 'theme/ThemeProvider';
 import { RootState } from './Store';
-import './css/App.css';
+import 'css/App.css';
 function App(){
   // Route
   const [route, setRoute] = useState(window.location.pathname);

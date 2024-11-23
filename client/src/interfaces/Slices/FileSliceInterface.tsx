@@ -1,3 +1,3 @@
-export interface fileSliceInterface {
+export interface FileSliceInterface {
     content: { [key: string]: string | string[] };
 }

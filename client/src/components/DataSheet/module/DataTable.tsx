@@ -4,17 +4,18 @@ import { useSelector } from 'react-redux';
 // Module imports
 import Resizer from './Resizer';
 import HoverOptions from './HoverOptions';
-import TableSubtitle from '../../../ui/DataTable/TableSubtitle';
+import TableSubtitle from 'ui/DataTable/TableSubtitle';
 import { tableScripts } from './TableScripts';
 import { RootState } from '../../../Store';
 // UI imports
-import Button from '../../../ui/Buttons/Button';
-import TableInput from '../../../ui/Inputs/TableInput';
+import Button from 'ui/Buttons/Button';
+import TableInput from 'ui/Inputs/TableInput';
 import { Table, TableHead, TableBody, HeaderRow, Row, HeaderCell, Cell } from '../../../ui/DataTable/Table';
-import '../../../css/App.css';
+import 'css/App.css';
 // Contexts
 import { FunctionContext, PropContext } from './TableProvider';
-import { FunctionContextType } from 'interfaces/tableProviderInterface';
+import { FunctionContextType } from 'src/interfaces/DataSheet/TableProviderInterface';
+import { HandleKeyDownProps, DataTableRowProps, DataTableCellProps } from 'interfaces/DataSheet/DataTableInterfaces';
 
 export function SheetTable(){
     const { addRow, deleteRow, addDataTable } = useContext(FunctionContext);
@@ -70,11 +71,6 @@ function DataTableHeader() {
     );
 }
 
-interface DataTableRowProps {
-    row_data_values: string[][];
-    row_style: string[];
-    row_index: number;
-}
 
 function DataTableRow({ row_data_values, row_style, row_index }: DataTableRowProps) {
     const { setCheckedRows } = useContext(FunctionContext);
@@ -106,16 +102,7 @@ function DataTableRow({ row_data_values, row_style, row_index }: DataTableRowPro
     );
 }
 
-interface DataTableCellProps {
-    value: string;
-    column: string;
-    style: string;
-    row_index: number;
-    cell_index: number;
-    is_hover: boolean;
-    is_checked: boolean;
-    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-}
+
 
 function DataTableCell({ value, column, style, row_index, cell_index, is_hover, is_checked, setIsChecked } : DataTableCellProps) {
     const { addRow, updateCell, inputsRef, focusInput } = useContext<FunctionContextType>(FunctionContext);
@@ -142,9 +129,7 @@ function DataTableCell({ value, column, style, row_index, cell_index, is_hover, 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         updateCell(row_index, column, e.target.value);
     };
-    interface HandleKeyDownProps {
-        key: string;
-    }
+
 
     const handleKeyDown = (e: HandleKeyDownProps) => {
         if (e.key === 'Enter') {            

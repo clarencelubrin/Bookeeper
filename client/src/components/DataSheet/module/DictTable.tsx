@@ -4,10 +4,11 @@ import { FunctionContext, PropContext } from './TableProvider';
 import HoverOptions from './HoverOptions';
 import { RootState } from '../../../Store';
 // UI imports
-import TableInput from '../../../ui/Inputs/TableInput';
-import { Table, TableHead, TableBody, HeaderRow, Row, Cell } from '../../../ui/DataTable/Table';
-import { ButtonTrayContainer, AddButtonCircle, DeleteButtonCircle, AddTableButtonCircle } from '../../../ui/Buttons/TableButtons';
-import '../../../css/App.css';
+import TableInput from 'ui/Inputs/TableInput';
+import { Table, TableHead, TableBody, HeaderRow, Row, Cell } from 'ui/DataTable/Table';
+import { ButtonTrayContainer, AddButtonCircle, DeleteButtonCircle, AddTableButtonCircle } from 'ui/Buttons/TableButtons';
+import { TableDictCellProps, RowDictCellProps } from 'interfaces/DataSheet/DictTableInterfaces';
+import 'css/App.css';
 
 function DictTable(){
     const { deleteRow, addDataTable, addDictRow } = useContext(FunctionContext);
@@ -93,14 +94,7 @@ function TableDictRow({row, row_index}: TableDictRowProps){
         </Row>
     );
 }
-interface TableDictCellProps {
-    cell: any;
-    row_index: number;
-    cell_index: number;
-    children: React.ReactNode;
-    inputClass?: string;
-    tdClass?: string;
-}
+
 function TableDictCell({ cell, row_index, cell_index, children, inputClass, tdClass }: TableDictCellProps) {
     const { updateDictCell, inputsRef, focusInput } = useContext(FunctionContext);
 
@@ -144,17 +138,6 @@ function TableDictCell({ cell, row_index, cell_index, children, inputClass, tdCl
             {children}
         </Cell>
     );
-}
-
-interface RowDictCellProps {
-    cell: any;
-    row_index: number;
-    cell_index: number;
-    is_hover: boolean;
-    is_checked: boolean;
-    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-    inputClass?: string;
-    tdClass?: string;
 }
 
 function RowDictCell({ cell, row_index, cell_index, is_hover, is_checked, setIsChecked }: RowDictCellProps){

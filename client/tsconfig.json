@@ -24,6 +24,7 @@
       "slices/*": ["./src/slices/*"],
       "ui/*": ["./src/ui/*"],
       "theme/*": ["./src/theme/*"],
+      "page/*": ["./src/page/*"],
     },
 
     /* Linting */

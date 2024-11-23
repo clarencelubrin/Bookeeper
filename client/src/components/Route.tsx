@@ -2,14 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../Store';
 import axios from 'axios';
-import { DefaultTheme } from 'interfaces/ThemeInterfaces';
-import '../css/App.css';
+import { DefaultTheme } from 'src/interfaces/Theme/ThemeInterfaces';
+import { RouteProps } from 'src/interfaces/Route/RouteInterface';
+import 'css/App.css';
 
-interface RouteProps {
-    routeType: 'save' | 'download' | 'new_document' | 'rename';
-    parameters: any;
-    children: React.ReactElement;
-}
 let theme = DefaultTheme;
 export function Route({ routeType, parameters = null, children }: RouteProps) {
     const data = useSelector((state: RootState) => state.data)['present']['content'];

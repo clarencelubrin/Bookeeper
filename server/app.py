@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 app.json.sort_keys = False
 # Constant variables
-input_folder = 'server/input'
+input_folder = 'input'
 
 # ---------------- Read and Write .xlxs ----------------- #
 def read_xlsx(filename):

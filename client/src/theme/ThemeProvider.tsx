@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
-import type { ThemeContextType, ThemeProviderProps, ThemeType } from 'interfaces/ThemeInterfaces';
-import { DefaultThemeContextType, DefaultTheme } from 'interfaces/ThemeInterfaces';
+import type { ThemeContextType, ThemeProviderProps, ThemeType } from 'src/interfaces/Theme/ThemeInterfaces';
+import { DefaultThemeContextType, DefaultTheme } from 'src/interfaces/Theme/ThemeInterfaces';
 
 export const ThemeContext = createContext<ThemeContextType>(DefaultThemeContextType);
 

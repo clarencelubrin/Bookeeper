@@ -1,15 +1,14 @@
 import { useState, useEffect, createContext, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addRowData, addTableData, deleteRowData, updateCellData } from '../../../slices/dataSlice';
+import { addRowData, addTableData, deleteRowData, updateCellData } from 'slices/dataSlice';
 import { RootState } from '../../../Store';
-import { FunctionContextType, PropContextType, TableProviderProps, defaultFunctionContext, defaultPropContext } from 'interfaces/tableProviderInterface';
-import { inputsRefType } from '../../../interfaces/tableProviderInterface';
+import { FunctionContextType, PropContextType, TableProviderProps, defaultFunctionContext, defaultPropContext } from 'src/interfaces/DataSheet/TableProviderInterface';
+import { inputsRefType } from 'src/interfaces/DataSheet/TableProviderInterface';
+import { newRowType } from 'interfaces/DataSheet/TableProviderInterfaces';
 export const FunctionContext = createContext<FunctionContextType>(defaultFunctionContext);
 export const PropContext = createContext<PropContextType>(defaultPropContext);
 
-interface newRowType {
-    [key: string]: string;
-}
+
 export function TableProvider({ table_data, sheet, table_index, sheet_widths, setSheetWidths, children }: TableProviderProps) {
     const dispatch = useDispatch();
     const data = useSelector((state: RootState) => state.data)['present']['content'];

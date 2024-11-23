@@ -1,18 +1,11 @@
 import { useState } from 'react';
-import { deleteDocument } from '../../components/Route';
+import { deleteDocument } from 'components/Route';
 import { motion, AnimatePresence } from 'framer-motion';
-// import { TableProvider } from '../DataSheet/module/TableProvider';
-// import ModalTable from './module/ModalTable';
-import '../../css/App.css';
+import { ModalProps, BackdropProps } from 'interfaces/Modals/ModalsInterfaces';
+import 'css/App.css';
 import { createPortal } from 'react-dom';
 
 const modalRoot = document.body;
-
-interface ModalProps {
-  showModal: boolean;
-  modalType: string;
-  onClickBackdrop: () => void;
-}
 
 function Modal({showModal, modalType, onClickBackdrop}: ModalProps) {
   return (
@@ -36,10 +29,7 @@ function Modal({showModal, modalType, onClickBackdrop}: ModalProps) {
   )
 }
 
-interface BackdropProps {
-  children: React.ReactNode;
-  onClickBackdrop: () => void;
-}
+
 
 function Backdrop ({children, onClickBackdrop}: BackdropProps){
   return (
@@ -115,11 +105,7 @@ function UploadContentModal() {
     );
 }
 
-interface DeleteContentModalProps {
-  handleOnClickCancel: () => void;
-}
-
-function DeleteContentModal({handleOnClickCancel}: DeleteContentModalProps){
+function DeleteContentModal({handleOnClickCancel}: {handleOnClickCancel: () => void}){
   const handleOnClick = async () => {
     const filename: string | undefined = window.location.pathname.split('/').pop();
      // Make the request to upload the file

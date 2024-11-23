@@ -1,13 +1,6 @@
-import React, { useRef } from 'react';
-import '../../../css/App.css';
-
-type ResizerProps = {
-    setSheetWidths: React.Dispatch<React.SetStateAction<number[]>>;
-    thIndex: number;
-};
-interface ResizeClickEvent extends React.MouseEvent<HTMLDivElement> {
-    target: HTMLDivElement & EventTarget;
-}
+import { useRef } from 'react';
+import { ResizeClickEvent, ResizerProps } from 'interfaces/DataSheet/ResizerInterfaces';
+import 'css/App.css';
 
 function Resizer({setSheetWidths, thIndex}: ResizerProps) {
     const currentThRef = useRef<HTMLDivElement | null>(null);

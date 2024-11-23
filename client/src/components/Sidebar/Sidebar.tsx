@@ -1,11 +1,7 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Store';
+import { LinkItemProps, LinkButtonProps, SidebarProps } from 'src/interfaces/Sidebar/SidebarInterface';
 
-interface SidebarProps {
-    className: string;
-    currentSheet: string;
-    setCurrentSheet: (sheet: string) => void;
-}
 export default function Sidebar({className, currentSheet, setCurrentSheet}: SidebarProps) {
     let files = useSelector((state: RootState) => state.file.content) as { filelist: string[], filename: string };
     if (!files){
@@ -48,11 +44,7 @@ export default function Sidebar({className, currentSheet, setCurrentSheet}: Side
 
     )
 }
-interface LinkItemProps {
-    link: string;
-    children: string;
-    currentFile: string;
-}
+
 function LinkItem({link, children, currentFile}: LinkItemProps){
     let selected_style = (currentFile === children) ? 'text-pink-500 hover:bg-pink-50' : 'text-gray-500 hover:bg-gray-100'
     const handleOnClick = () => {
@@ -67,11 +59,7 @@ function LinkItem({link, children, currentFile}: LinkItemProps){
         </button>
     )
 }
-interface LinkButtonProps {
-    onClick: () => void;
-    currentSheet: string;
-    children: string;
-}
+
 function LinkButton({onClick, currentSheet, children}: LinkButtonProps){
     let selected_style = (currentSheet === children) ? 'text-pink-500 hover:bg-pink-50' : 'text-gray-500 hover:bg-gray-100'
     return(

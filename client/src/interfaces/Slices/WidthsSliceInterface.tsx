@@ -1,3 +1,3 @@
-export interface widthsSliceInterface {
+export interface WidthsSliceInterface {
     content: { [key: string]: number[] };
 }

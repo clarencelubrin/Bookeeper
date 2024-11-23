@@ -7,15 +7,12 @@ import { RootState } from 'src/Store';
 import { Route } from '../Route';
 import Modal from '../Modals';
 import WindowControlButtons from './module/WindowControlButtons';
-import { fileSliceInterface } from 'src/interfaces/fileSliceInterface';
+import { FileSliceInterface } from 'interfaces/Slices/FileSliceInterface';
+import { NavbarProps, DropdownMenuProps, DropdownMenuItemProps } from 'interfaces/Navbar/NavbarInterface'; 
 import { ThemeContext } from 'theme/ThemeProvider';
 import 'css/App.css';
 
-interface NavbarProps {
-    show_navlink?: boolean;
-    show_titletexbox?: boolean;
-    show_dropdown?: boolean;
-}
+
 
 function Navbar({ show_navlink = true, show_titletexbox = true, show_dropdown = true }: NavbarProps){   
     const [is_dropdown_open, setIsDropdownOpen] = useState(false);
@@ -94,15 +91,13 @@ function TitleTextbox(){
     )
 }
 
-interface DropdownMenuProps {
-    is_open: boolean;
-}
+
 
 function DropdownMenu({is_open}: DropdownMenuProps){
     const [show_recent_files, setShowRecentFiles] = useState(false);
     const [show_upload_modal, setShowUploadModal] = useState(false);
     const [show_delete_modal, setShowDeleteModal] = useState(false);
-    let files: fileSliceInterface['content'] = useSelector((state: RootState) => state.file.content);
+    let files: FileSliceInterface['content'] = useSelector((state: RootState) => state.file.content);
     
     const dispatch = useDispatch();
     const past_data = useSelector((state: RootState) => state.data)['past'];
@@ -248,11 +243,7 @@ function DropdownMenu({is_open}: DropdownMenuProps){
     )
 }
 
-interface DropdownMenuItemProps {
-    name: string;
-    icon: JSX.Element;
-    onClick?: () => void;
-}
+
 
 function DropdownMenuItem({name, icon, onClick = ()=>{}}: DropdownMenuItemProps){
     const handleOnClick = () => {
