@@ -57,6 +57,7 @@ function DataTableHeader() {
     const { table_data, sheet_widths } = useContext(PropContext);
     const filteredRow = Object.entries(table_data[0]).filter(([key]) => key !== 'Title' && key !== 'Account No.');
     const headers = Object.values(filteredRow).map(([key]) => key);
+
     return (
         <HeaderRow>
             {headers.map((header, index) => (

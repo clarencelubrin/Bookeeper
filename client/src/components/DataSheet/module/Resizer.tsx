@@ -25,7 +25,7 @@ function Resizer({setSheetWidths, thIndex}: ResizerProps) {
     const resizeColumn = (e: MouseEvent) => {
         const width = startWidthRef.current + (e.clientX - startXRef.current);
         // Set a minimum column width
-        if (width > 50) {
+        if (width > 30) {
             setSheetWidths(prevState => {
                 const newState = [...prevState];
                 newState[thIndex] = width;

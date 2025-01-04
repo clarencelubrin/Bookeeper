@@ -76,7 +76,11 @@ function cellScript(sheet: string, column_title: string, value: string, row_data
             row_data.forEach(([cell_title, cell_value]) => {
                 cell_title = cell_title.toLowerCase();
                 if (cell_title.toLowerCase() === 'debit' || cell_title.toLowerCase() === 'credit' || cell_title.toLowerCase() === 'balance') {
+<<<<<<< HEAD
+                    cell_value = toDigit(cell_value).toString().replace(/0/g, '');
+=======
                     cell_value = toDigit(cell_value).toString();
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
                 }
                 if ((cell_value === '' || cell_value === ' ') && cell_title !== 'description') {
                     emptyCells++;
@@ -86,11 +90,11 @@ function cellScript(sheet: string, column_title: string, value: string, row_data
                 style = 'italic';
             }
             // Auto tab the description
-            const creditCell = toDigit(row_data_dict['CREDIT']);
-            if (creditCell && value[0] !== '\t') {
-                value = '\t' + value;
+            const creditCell = toDigit(row_data_dict['CREDIT']).toString();
+            if (creditCell !== '0' && value[0] !== '\t') {
+                value = '\t' + value.trim();
             } 
-            else {
+            else if(creditCell === '0'){
                 value = value.replace('\t', '');
             }
         }
@@ -146,8 +150,13 @@ function toDigit(value: string){
         Output: value with commas
 */
 function autoComma(value: string){
+<<<<<<< HEAD
+    let digits = toDigit(value);
+    value = digits.toLocaleString();
+=======
     value = (toDigit(value)).toString() || '';
     value = value.toLocaleString();
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
     return value;
 }
 /*  Auto P/R function

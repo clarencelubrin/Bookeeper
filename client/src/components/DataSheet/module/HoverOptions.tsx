@@ -66,7 +66,7 @@ function HoverOptions({ absolute_position, is_hovered, row_index, addRow, is_che
         mode='wait'
         onExitComplete={()=>null}>
         <motion.div 
-            className={`absolute ${absolute_position} z-10 rounded-lg scale-200`}
+            className={`absolute ${absolute_position} rounded-lg scale-200`}
             style={{ width: '100px' }}
             variants={hoverAnimation}
             initial="hidden"

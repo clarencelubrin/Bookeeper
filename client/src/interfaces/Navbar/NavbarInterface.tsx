@@ -5,6 +5,10 @@ export interface NavbarProps {
 }
 export interface DropdownMenuProps {
     is_open: boolean;
+<<<<<<< HEAD
+    modalRef: React.RefObject<HTMLDivElement>;
+=======
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
 }
 export interface DropdownMenuItemProps {
     name: string;

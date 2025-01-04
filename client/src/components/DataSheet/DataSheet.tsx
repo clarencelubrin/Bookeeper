@@ -16,6 +16,9 @@ function DataSheet({sheet}: {sheet:string}) {
     useEffect(() => {
         dispatch(setWidths({...widths, [sheet]: sheet_widths}));
     }, [sheet_widths]);
+    useEffect(() => {
+       setSheetWidths(widths[sheet])
+    }, [widths]);
     return(
         <div>
             <h1 className="ml-2 mb-5 text-3xl font-bold text-center">{sheet}</h1>

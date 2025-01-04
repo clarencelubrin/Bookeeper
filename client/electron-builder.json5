@@ -1,15 +1,21 @@
 // @see - https://www.electron.build/configuration/configuration
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "YourAppID",
+  "appId": "app.bookeeper",
   "asar": true,
-  "productName": "YourAppName",
+  "productName": "Bookeeper",
   "directories": {
     "output": "release/${version}"
   },
   "files": [
     "dist",
     "dist-electron"
+  ],
+  "extraResources": [
+    { 
+    "from": "backend", 
+    "to": "backend"
+    },
   ],
   "mac": {
     "target": [
@@ -26,6 +32,7 @@
         ]
       }
     ],
+    "icon": "icon.png",
     "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
   },
   "nsis": {

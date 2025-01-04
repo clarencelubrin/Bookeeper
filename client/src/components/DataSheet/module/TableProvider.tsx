@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+import { useState, createContext, useRef } from 'react';
+=======
 import { useState, useEffect, createContext, useRef } from 'react';
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
 import { useSelector, useDispatch } from 'react-redux';
 import { addRowData, addTableData, deleteRowData, updateCellData } from 'slices/dataSlice';
 import { RootState } from '../../../Store';
@@ -19,9 +23,13 @@ export function TableProvider({ table_data, sheet, table_index, sheet_widths, se
         const input = inputsRef.current[row_index][cell_index];
         input.focus();
     };
+<<<<<<< HEAD
+
+=======
     useEffect(() => {
         // console.log(inputsRef.current);
     }, [inputsRef.current]);
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
     // Functions
     const updateCell = (rowIndex: number, key: string, value: string) => {
         const updatedData = JSON.parse(JSON.stringify(data));
@@ -129,9 +137,6 @@ export function TableProvider({ table_data, sheet, table_index, sheet_widths, se
         setCheckedRows(() => []); // Remove refs of deleted rows
         return;
     }
-    useEffect(()=>{
-        // console.log(data['spreadsheet'][sheet], checked_rows);
-    }, [data]) // Triggered when data is changed
     
     const function_list: FunctionContextType = {
         updateCell, 
