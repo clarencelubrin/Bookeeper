@@ -2,6 +2,7 @@
 **/dist/
 **/build/
 **/backend/
+**/release/
 # Ignore python cache files and virtual environment
 **/input/
 **/__pycache__/
@@ -11,3 +12,4 @@
 **/node_modules/
 # Ignore environment files
 **/.env
+
