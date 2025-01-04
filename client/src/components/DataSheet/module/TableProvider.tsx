@@ -1,33 +1,35 @@
-import React, { useState, useEffect, useContext, createContext, useRef } from 'react';
+<<<<<<< HEAD
+import { useState, createContext, useRef } from 'react';
+=======
+import { useState, useEffect, createContext, useRef } from 'react';
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
 import { useSelector, useDispatch } from 'react-redux';
-import { initData, addRowData, addTableData, deleteRowData, updateCellData } from '../../../slices/dataSlice';
+import { addRowData, addTableData, deleteRowData, updateCellData } from 'slices/dataSlice';
 import { RootState } from '../../../Store';
-import { FunctionContextType, PropContextType, TableProviderProps, defaultFunctionContext, defaultPropContext } from '../../../interfaces/tableProviderInterface';
-
+import { FunctionContextType, PropContextType, TableProviderProps, defaultFunctionContext, defaultPropContext } from 'src/interfaces/DataSheet/TableProviderInterface';
+import { inputsRefType } from 'src/interfaces/DataSheet/TableProviderInterface';
+import { newRowType } from 'interfaces/DataSheet/TableProviderInterfaces';
 export const FunctionContext = createContext<FunctionContextType>(defaultFunctionContext);
 export const PropContext = createContext<PropContextType>(defaultPropContext);
 
-interface inputsRefType {
-    [key: number]: { [key: number]: HTMLInputElement };
-}
-interface newRowType {
-    [key: string]: string;
-}
+
 export function TableProvider({ table_data, sheet, table_index, sheet_widths, setSheetWidths, children }: TableProviderProps) {
     const dispatch = useDispatch();
     const data = useSelector((state: RootState) => state.data)['present']['content'];
     const [checked_rows, setCheckedRows] = useState<number[]>([]);
 
-    const inputsRef = useRef<inputsRefType>({});
+    const inputsRef = useRef<inputsRefType>([]);
     const focusInput = (row_index: number, cell_index: number) => {
-        const inputs = inputsRef.current;
-        if (inputs !== null) {
-            const input = (inputs as inputsRefType)[row_index][cell_index];
-            if (input !== undefined) {
-                input.focus();
-            }
-        }
+        const input = inputsRef.current[row_index][cell_index];
+        input.focus();
     };
+<<<<<<< HEAD
+
+=======
+    useEffect(() => {
+        // console.log(inputsRef.current);
+    }, [inputsRef.current]);
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
     // Functions
     const updateCell = (rowIndex: number, key: string, value: string) => {
         const updatedData = JSON.parse(JSON.stringify(data));
@@ -126,18 +128,17 @@ export function TableProvider({ table_data, sheet, table_index, sheet_widths, se
         });
         dispatch(deleteRowData(updatedData)); // Update the data in the store       
         // Remove refs of deleted rows
-        let inputsArray = Object.values(inputsRef.current);
+        let inputsArray = inputsRef.current ? Object.values(inputsRef.current) : [];
         clean_checked_rows.forEach(() => {inputsArray.pop()});
-        inputsRef.current = {}; // Reset the inputsRef
-        inputsArray.forEach((values, index) => {inputsRef.current[index] = values});
+        inputsRef.current = []; // Reset the inputsRef
+        if (inputsRef.current) {
+            inputsArray.forEach((values: HTMLInputElement[], index) => {inputsRef.current[index] = values});
+        }
         setCheckedRows(() => []); // Remove refs of deleted rows
         return;
     }
-    useEffect(()=>{
-        // console.log(data['spreadsheet'][sheet], checked_rows);
-    }, [data]) // Triggered when data is changed
     
-    const function_list = {
+    const function_list: FunctionContextType = {
         updateCell, 
         addRow,
         deleteRow,
@@ -149,7 +150,7 @@ export function TableProvider({ table_data, sheet, table_index, sheet_widths, se
         inputsRef,      // reference to the inputs 
         focusInput
     };
-    const props_list = {
+    const props_list: PropContextType = {
         table_data,
         sheet,          // worksheet name
         table_index,    // index of the table in the worksheet

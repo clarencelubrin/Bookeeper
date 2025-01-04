@@ -1,12 +1,14 @@
-import React, { useRef } from 'react';
-import '../../../css/App.css';
+import { useRef } from 'react';
+import { ResizeClickEvent, ResizerProps } from 'interfaces/DataSheet/ResizerInterfaces';
+import 'css/App.css';
 
-function Resizer({setSheetWidths, thIndex}) {
-    const currentThRef = useRef(null);
+function Resizer({setSheetWidths, thIndex}: ResizerProps) {
+    const currentThRef = useRef<HTMLDivElement | null>(null);
     const startXRef = useRef(0);
     const startWidthRef = useRef(0);
-    const onResizeClick = (e) => {
-        const currentTh = e.target.parentElement;
+
+    const onResizeClick = (e: ResizeClickEvent) => {
+        const currentTh = e.target.parentElement as HTMLDivElement;
         currentThRef.current = currentTh;
         startXRef.current = e.clientX;
         startWidthRef.current = currentTh.offsetWidth;
@@ -20,10 +22,10 @@ function Resizer({setSheetWidths, thIndex}) {
     };
 
     // Mouse move
-    const resizeColumn = (e) => {
+    const resizeColumn = (e: MouseEvent) => {
         const width = startWidthRef.current + (e.clientX - startXRef.current);
         // Set a minimum column width
-        if (width > 50) {
+        if (width > 30) {
             setSheetWidths(prevState => {
                 const newState = [...prevState];
                 newState[thIndex] = width;

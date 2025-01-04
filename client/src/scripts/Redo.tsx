@@ -1,7 +1,7 @@
 import { ActionCreators } from 'redux-undo'; 
-import { useSelector, useDispatch } from 'react-redux';
+import { Dispatch } from 'redux';
 
-const Redo = ({future_data, dispatch}) => {
+const Redo = ({ future_data, dispatch }: { future_data: any[], dispatch: Dispatch }) => {
     if (future_data.length > 0) {
         dispatch(ActionCreators.redo())
     }

@@ -1,32 +1,54 @@
-import React, { useState, useEffect, useRef  } from 'react';
+import React, { useState, useEffect, useRef, useContext  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
-import Undo from '../../scripts/Undo';
-import Redo from '../../scripts/Redo';
+<<<<<<< HEAD
+import { Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { initData } from 'src/slices/dataSlice';
+import Undo from 'scripts/Undo';
+import Redo from 'scripts/Redo';
+
+import { RootState } from 'src/Store';
+import { saveDocument, downloadDocument, newDocument, renameDocument } from '../Route';
+
+import Modal from '../Modals';
+import WindowControlButtons from './module/WindowControlButtons';
+
+import { FileSelectorInterface } from 'interfaces/Slices/FileSliceInterface';
+import { NavbarProps, DropdownMenuProps, DropdownMenuItemProps } from 'interfaces/Navbar/NavbarInterface'; 
+import { ThemeContext } from 'theme/ThemeProvider';
+
+import { autoLedger } from 'src/scripts/AutoLedger';
+import { ledger_type } from 'src/interfaces/Scripts/AutoLedgeTypes';
+import 'css/App.css';
+
+
+=======
+import Undo from 'scripts/Undo';
+import Redo from 'scripts/Redo';
+import { RootState } from 'src/Store';
 import { Route } from '../Route';
 import Modal from '../Modals';
 import WindowControlButtons from './module/WindowControlButtons';
-import { RootState } from '../../Store';
-import { fileSliceInterface } from 'interfaces/slice-interfaces/fileSliceInterface';
-import '../../css/App.css';
+import { FileSliceInterface } from 'interfaces/Slices/FileSliceInterface';
+import { NavbarProps, DropdownMenuProps, DropdownMenuItemProps } from 'interfaces/Navbar/NavbarInterface'; 
+import { ThemeContext } from 'theme/ThemeProvider';
+import 'css/App.css';
 
-interface NavbarProps {
-    show_navlink?: boolean;
-    show_titletexbox?: boolean;
-    show_dropdown?: boolean;
-}
+
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
 
 function Navbar({ show_navlink = true, show_titletexbox = true, show_dropdown = true }: NavbarProps){   
     const [is_dropdown_open, setIsDropdownOpen] = useState(false);
-
+    const { theme } = useContext(ThemeContext);
     const menuRef = useRef<HTMLDivElement>(null);
-    
+    const modalRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current === null) {
                 return;
             }
-            else if (event.target && !menuRef.current.contains(event.target as Node)) {
+            else if (event.target && !menuRef.current.contains(event.target as Node) && !modalRef.current?.contains(event.target as Node)){ 
                 setIsDropdownOpen(false);
             }
         }
@@ -41,7 +63,6 @@ function Navbar({ show_navlink = true, show_titletexbox = true, show_dropdown = 
         };
         window.addEventListener('resize', handleResize);
         handleResize();
-
         return () => {
             window.removeEventListener('resize', handleResize);
         };
@@ -52,12 +73,18 @@ function Navbar({ show_navlink = true, show_titletexbox = true, show_dropdown = 
                 {show_dropdown &&
                 <div className="relative" ref={menuRef}>
                     <DropdownMenuButton onClick={()=>{setIsDropdownOpen(!is_dropdown_open)}} />
-                    <DropdownMenu is_open={is_dropdown_open}/>
+                    <DropdownMenu modalRef={modalRef} is_open={is_dropdown_open}/>
                 </div>}
                 <div className='ms-3 space-x-8'>
-                    <a href="/" className="navbar-item text-pink-500 inline-flex items-center text-wrap sm:max-w-full text-center text-lg font-bold">
-                        Bookeeper ⋆౨ৎ˚⟡˖ ࣪
+<<<<<<< HEAD
+                    <Link to="/" className={`navbar-item text-${theme.styles.primaryColor}-500 inline-flex items-center text-wrap sm:max-w-full text-center text-lg font-bold`}>
+                        {theme.text.TITLE}
+                    </Link>
+=======
+                    <a href="/" className={`navbar-item text-${theme.styles.primaryColor}-500 inline-flex items-center text-wrap sm:max-w-full text-center text-lg font-bold`}>
+                        {theme.text.TITLE}
                     </a>
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
                 </div>
             </div>                
             <div className="flex items-center gap-3 me-1">
@@ -70,43 +97,63 @@ function Navbar({ show_navlink = true, show_titletexbox = true, show_dropdown = 
     )
 }
 
-function getFileName(){
-    const path = window.location.pathname.split('/').pop();
-    return path ? path.replace('.xlsx', '') : '';
-}
-
 function TitleTextbox(){
-    const [value, setValue] = useState(getFileName());
+    // const files = useSelector((state: RootState) => state.file.content) as unknown as FileSelectorInterface;
+    let location = useLocation();
+    let current_filename = location.pathname.replace('/', '').replace('.xlsx', '');
+    const [value, setValue] = useState(current_filename);
+
+    const navigate = useNavigate();
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
+
+    }
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        console.log(value);
+        renameDocument(`${value}.xlsx`, `${current_filename}.xlsx`, navigate);
     }
     useEffect(() => {
-        setValue(getFileName());
-    }, [window.location.pathname]);
+        setValue(current_filename);
+    }, [current_filename]);
     return (
-        <Route routeType="rename" parameters={value+'.xlsx'}>
-            <input type="text" onChange={handleChange} value={value} placeholder="Title" 
+        <form onSubmit={handleSubmit}>
+            <input type="text" onChange={handleChange}  value={value} placeholder="Title" 
                 className="navbar-item input-primary sm:w-auto w-32 focus:translate-y-0 focus:scale-100 px-2
                 text-right text-pink-500 font-medium">
             </input>
-        </Route>
+        </form>
     )
 }
 
-interface DropdownMenuProps {
-    is_open: boolean;
-}
+<<<<<<< HEAD
+=======
 
-function DropdownMenu({is_open}: DropdownMenuProps){
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
+
+
+function DropdownMenu({is_open, modalRef}: DropdownMenuProps){
     const [show_recent_files, setShowRecentFiles] = useState(false);
     const [show_upload_modal, setShowUploadModal] = useState(false);
     const [show_delete_modal, setShowDeleteModal] = useState(false);
-    let files: fileSliceInterface['content'] = useSelector((state: RootState) => state.file.content);
+<<<<<<< HEAD
+    // let files: FileSliceInterface['content'] = useSelector((state: RootState) => state.file.content);
+=======
+    let files: FileSliceInterface['content'] = useSelector((state: RootState) => state.file.content);
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
     
+    let files = useSelector((state: RootState) => state.file.content) as unknown as FileSelectorInterface;
+    let location = useLocation();
+    let current_filename = location.pathname.replace('/', '');
+
     const dispatch = useDispatch();
+    const data = useSelector((state: RootState) => state.data)['present']['content'];
+    const widths = useSelector((state: RootState) => state.widths)['content'];
     const past_data = useSelector((state: RootState) => state.data)['past'];
     const future_data = useSelector((state: RootState) => state.data)['future'];
-
+    
+    const [computedLedger, setComputedLedger] = useState<ledger_type | undefined>(undefined);
+    const navigate = useNavigate();
     const bounceAnimation = {
         hidden: { 
             opacity: 0, 
@@ -162,6 +209,16 @@ function DropdownMenu({is_open}: DropdownMenuProps){
             }
         }
     };
+
+    useEffect(() => {
+        if (data) {
+            let modified_data = {
+                ...(typeof data['spreadsheet'] === 'object' ? data['spreadsheet'] : {}),
+                'General Ledger': computedLedger
+            }
+            dispatch(initData({'spreadsheet': modified_data}));
+        }
+    }, [computedLedger])
     return (
         <AnimatePresence
         initial={false}
@@ -175,18 +232,16 @@ function DropdownMenu({is_open}: DropdownMenuProps){
             animate={is_open ? "visible" : "hidden"}
             exit="exit"
             >
-            <Route routeType="new_document" parameters="">
-                <DropdownMenuItem 
-                    name="Create new file"
-                    icon={<svg className="dropdown-icon feather feather-file-plus" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>}
-                />
-            </Route>
-            <Route routeType="save" parameters={window.location.pathname.split('/').pop()}>
-                <DropdownMenuItem 
-                    name="Save file"
-                    icon={<svg className="dropdown-icon feather feather-save" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>}
-                />
-            </Route>
+            <DropdownMenuItem 
+                onClick={() => newDocument(navigate)}
+                name="Create new file"
+                icon={<svg className="dropdown-icon feather feather-file-plus" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>}
+            />
+            <DropdownMenuItem 
+                onClick={()=>saveDocument(current_filename, data, widths, navigate)}
+                name="Save file"
+                icon={<svg className="dropdown-icon feather feather-save" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>}
+            />
             <hr/>
             <DropdownMenuItem
                 name="Undo"
@@ -213,45 +268,69 @@ function DropdownMenu({is_open}: DropdownMenuProps){
                     exit="exit"
                     className=''>
                     {files && Array.isArray(files.filelist) && files.filelist.map((file: string) => (
-                        <a href={`/${file}`} onClick={()=>{}} 
+                        <Link to={`/${file}`} onClick={()=>{}} 
                             className="flex flex-row relative block truncate px-3 py-1 my-1
                             text-sm text-gray-700
                             hover:bg-gray-100">
                             {file}
-                        </a>  
+                        </Link>  
                     ))}
                     <hr/>
                 </motion.div>}
             </AnimatePresence>
-            <Route routeType="download" parameters="">
-                <DropdownMenuItem
-                    name="Export to .xlsx"
-                    icon={<svg className="dropdown-icon feather feather-download" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>}
-                />                
-            </Route>
+            <DropdownMenuItem
+                name="Export to .xlsx"
+                onClick={()=>downloadDocument(current_filename)}
+                icon={<svg className="dropdown-icon feather feather-download" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>}
+            />                
             <DropdownMenuItem
                 name="Import .xlsx"
                 icon={<svg className="dropdown-icon feather feather-upload" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>}
                 onClick={()=>{setShowUploadModal(!show_upload_modal)}}
             />
-            <Modal modalType={'upload'} showModal={show_upload_modal} onClickBackdrop={()=>{setShowUploadModal(!show_upload_modal)}}/>
+            <Modal 
+                modalType={'upload'} 
+                showModal={show_upload_modal} 
+                onClickBackdrop={()=>{setShowUploadModal(!show_upload_modal)}}
+                modalRef={modalRef}
+            />
+            <hr/>
+            <DropdownMenuItem
+                name="Auto-fill Ledger"
+                icon={    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="dropdown-icon feather feather-edit-3">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                }
+                onClick={()=>{
+                    const computed_ledger = autoLedger(data?.['spreadsheet']['Chart of Accounts'], data?.['spreadsheet']['General Journal'])
+                    console.log(computed_ledger)
+                    if (computed_ledger !== undefined){
+                        setComputedLedger(computed_ledger)
+                        window.ipcRenderer.send('show-alert', {'title': 'Auto-fill Ledger', 'message': 'Ledger has been auto-filled!'});
+                        console.log('Updated!')
+                    }
+                }}
+            />
             <hr/>
             <DropdownMenuItem
                 name="Delete permanently"
                 icon={<svg className="dropdown-icon feather feather-trash-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>}
                 onClick={()=>{setShowDeleteModal(!show_delete_modal)}}
             />
-            <Modal modalType={'delete'} showModal={show_delete_modal} onClickBackdrop={()=>{setShowDeleteModal(!show_delete_modal)}}/>
+            <Modal 
+                modalType={'delete'} 
+                showModal={show_delete_modal} 
+                onClickBackdrop={()=>{setShowDeleteModal(!show_delete_modal)}}
+                modalRef={modalRef}
+            />
         </motion.div>}
         </AnimatePresence>
     )
 }
 
-interface DropdownMenuItemProps {
-    name: string;
-    icon: JSX.Element;
-    onClick?: () => void;
-}
+
 
 function DropdownMenuItem({name, icon, onClick = ()=>{}}: DropdownMenuItemProps){
     const handleOnClick = () => {
@@ -272,7 +351,7 @@ function DropdownMenuButton({onClick = ()=>{}}){
         onClick();
     }
     return (
-        <button type="button" className="navbar-item ms-2 me-1 mt-1" onClick={handleOnClick}>
+        <button type="button" className="navbar-item ms-2 me-1 mt-2" onClick={handleOnClick}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
         </button>      
     )

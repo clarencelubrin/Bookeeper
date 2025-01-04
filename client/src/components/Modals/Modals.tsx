@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { deleteDocument } from '../../components/Route';
+<<<<<<< HEAD
+import { deleteDocument, uploadDocument } from 'components/Route';
+=======
+import { deleteDocument } from 'components/Route';
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
 import { motion, AnimatePresence } from 'framer-motion';
-// import { TableProvider } from '../DataSheet/module/TableProvider';
-// import ModalTable from './module/ModalTable';
-import '../../css/App.css';
+import { ModalProps, BackdropProps } from 'interfaces/Modals/ModalsInterfaces';
+import 'css/App.css';
 import { createPortal } from 'react-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const modalRoot = document.body;
 
-interface ModalProps {
-  showModal: boolean;
-  modalType: string;
-  onClickBackdrop: () => void;
-}
-
+<<<<<<< HEAD
+function Modal({showModal, modalType, onClickBackdrop, modalRef}: ModalProps) {
+=======
 function Modal({showModal, modalType, onClickBackdrop}: ModalProps) {
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
   return (
     <AnimatePresence initial={false} mode='wait' onExitComplete={()=>null}>
     {showModal &&
@@ -24,10 +26,11 @@ function Modal({showModal, modalType, onClickBackdrop}: ModalProps) {
         exit="exit"
         className='bg-gray-50'>
         {createPortal(
-          <Backdrop onClickBackdrop={onClickBackdrop}>
+          <Backdrop onClickBackdrop={onClickBackdrop} modalRef={modalRef}>
             {(modalType === "upload") && <UploadContentModal />}
             {(modalType === "delete") && <DeleteContentModal handleOnClickCancel={onClickBackdrop} />}
-          </Backdrop>,
+          </Backdrop>          
+          ,
           modalRoot
         )}
       </motion.div>      
@@ -36,14 +39,15 @@ function Modal({showModal, modalType, onClickBackdrop}: ModalProps) {
   )
 }
 
-interface BackdropProps {
-  children: React.ReactNode;
-  onClickBackdrop: () => void;
-}
+<<<<<<< HEAD
+function Backdrop ({children, onClickBackdrop, modalRef}: BackdropProps){
+=======
+
 
 function Backdrop ({children, onClickBackdrop}: BackdropProps){
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
   return (
-    <div className="fixed z-50 inset-0 backdrop-blur-md bg-gray/50 w-screen h-screen">
+    <div className="fixed z-50 inset-0 backdrop-blur-md bg-gray/50 w-screen h-screen" ref={modalRef}>
       <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0" onClick={onClickBackdrop}>
         <div className="bg-white shadow-xl px-4 pb-4 pt-5 rounded-lg sm:p-6 sm:pb-4" onClick={(e) => e.stopPropagation()}>
           <div className="sm:flex sm:items-start">
@@ -57,7 +61,7 @@ function Backdrop ({children, onClickBackdrop}: BackdropProps){
 
 function UploadContentModal() {
     const [file, setFile] = useState<File | null>(null);
-
+    const navigator = useNavigate();
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0]);
@@ -72,24 +76,22 @@ function UploadContentModal() {
             alert("Please select a file to upload.");
             return;
         }
-        
-        const formData = new FormData();
-        formData.append("file", file);
-        document.body.style.cursor = 'wait';
+        uploadDocument(file, navigator);
+
         // Make the request to upload the file
-        const response = await fetch('/upload', {
-            method: 'POST',
-            body: formData,
-        })
-        const result = await response.json();
-        if (result.success) {
-            document.body.style.cursor = 'default';
-            alert('Data saved successfully!');
-            window.location.href = `/${result.filename}`;
-        } else {
-            document.body.style.cursor = 'default';
-            alert(result.message);
-        }
+        // const response = await fetch('/upload', {
+        //     method: 'POST',
+        //     body: formData,
+        // })
+        // const result = await response.json();
+        // if (result.success) {
+        //     document.body.style.cursor = 'default';
+        //     alert('Data saved successfully!');
+        //     window.location.href = `/${result.filename}`;
+        // } else {
+        //     document.body.style.cursor = 'default';
+        //     alert(result.message);
+        // }
     };
 
     return (
@@ -115,15 +117,16 @@ function UploadContentModal() {
     );
 }
 
-interface DeleteContentModalProps {
-  handleOnClickCancel: () => void;
-}
-
-function DeleteContentModal({handleOnClickCancel}: DeleteContentModalProps){
+function DeleteContentModal({handleOnClickCancel}: {handleOnClickCancel: () => void}){
+<<<<<<< HEAD
+  const navigate = useNavigate();
+  const location = useLocation();
+=======
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
   const handleOnClick = async () => {
-    const filename: string | undefined = window.location.pathname.split('/').pop();
+    const filename: string | undefined = location.pathname.split('/').pop();
      // Make the request to upload the file
-    deleteDocument(filename || '');
+    deleteDocument(filename || '', navigate);
   }
   return(
   <div className="w-full text-center sm:mt-0 sm:text-left">

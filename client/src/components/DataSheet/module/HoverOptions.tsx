@@ -1,22 +1,14 @@
-import React, { useState, useEffect, useContext, createContext, useRef } from 'react';
+import { useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FunctionContext } from './TableProvider';
-import '../../../css/App.css';
-
-interface HoverOptionsProps {
-    absolute_position?: string;
-    is_hovered: boolean;
-    row_index: number;
-    addRow: (row_index: number) => void;
-    is_checked: boolean;
-    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { HoverOptionsProps } from 'interfaces/DataSheet/HoverOptionsInterfaces';
+import 'css/App.css';
 
 function HoverOptions({ absolute_position, is_hovered, row_index, addRow, is_checked, setIsChecked}: HoverOptionsProps) {
     const { setCheckedRows } = useContext(FunctionContext);
     absolute_position = absolute_position || 'top-4 left-4';
     const check_value = useRef(is_checked);
-    const setCheckValue = (value) => {
+    const setCheckValue = (value: boolean) => {
         check_value.current = value;
     };
     useEffect(() => {
@@ -74,7 +66,7 @@ function HoverOptions({ absolute_position, is_hovered, row_index, addRow, is_che
         mode='wait'
         onExitComplete={()=>null}>
         <motion.div 
-            className={`absolute ${absolute_position} z-10 rounded-lg scale-200`}
+            className={`absolute ${absolute_position} rounded-lg scale-200`}
             style={{ width: '100px' }}
             variants={hoverAnimation}
             initial="hidden"

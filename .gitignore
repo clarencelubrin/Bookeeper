@@ -1,0 +1,13 @@
+# Ignore production files
+**/dist/
+**/build/
+**/backend/
+# Ignore python cache files and virtual environment
+**/input/
+**/__pycache__/
+**/*.xlsx
+**/*.spec
+# Ignore node_modules
+**/node_modules/
+# Ignore environment files
+**/.env

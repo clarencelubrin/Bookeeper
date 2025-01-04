@@ -4,14 +4,14 @@
         Input: sheet (str), table_data (2d list), table_index (list), data (dict)
         Output: updated table_data (2d list), table_style (2d list)
 */
-export function tableScripts(sheet: string, input_table_data: String[][][], table_index: Number, data: object){
-    let table_data: String[][][] = [];
-    let table_style: String[][] = [];
+export function tableScripts(sheet: string, input_table_data: string[][][], data: dataType){
+    let table_data: string[][][] = [];
+    let table_style: string[][] = [];
 
     // Variables for row scripts
-    let prev_row: String[][] = [];
-    input_table_data.map((row, row_index) => {
-        const { row_data, row_style } = rowScripts(sheet, row, row_index, prev_row, data);
+    let prev_row: string[][] = [];
+    input_table_data.map((row) => {
+        const { row_data, row_style } = rowScripts(sheet, row,  prev_row, data);
         table_data.push(row_data);      // Push new row_data to table_data
         table_style.push(row_style);    // Push new row_style to table_style
         prev_row = row_data;
@@ -26,15 +26,17 @@ export function tableScripts(sheet: string, input_table_data: String[][][], tabl
         Output: updated row_data (2d list), row_style (2d list)
 */
 
-function rowScripts(sheet, input_row_data, row_index, prev_row, data) {
-    let row_style: String[] = [];
-    let row_data: String[][] = [];
-    const input_row_data_dict = input_row_data; // snapshot of the row_data {column_title: cell_value}
-    input_row_data = Object.entries(input_row_data).filter(([key]) => key !== 'Title' && key !== 'Account No.');
+function rowScripts(sheet: string, input_row_data: string[][], prev_row: string[][], data: dataType) {
+    let row_style: string[] = [];
+    let row_data: string[][] = [];
+    const input_row_data_dict = input_row_data as unknown as {[key: string]: string}; // snapshot of the row_data {column_title: cell_value}
+    input_row_data = Object.entries(input_row_data)
+        .filter(([key]) => key !== 'Title' && key !== 'Account No.')
+        .map(([key, value]) => [key, value] as string[]);
     
-    input_row_data.map((cell, cell_index) => {
+    input_row_data.map((cell) => {
         const [column_title, value] = cell;
-        const out = cellScript(sheet, column_title, value, row_index, input_row_data, data, prev_row);
+        const out = cellScript(sheet, column_title, value, input_row_data, prev_row);
         let new_value: string = out.value;
         let new_style: string = out.style;
 
@@ -54,10 +56,10 @@ function rowScripts(sheet, input_row_data, row_index, prev_row, data) {
         row_style.push(new_style);                  // Push new style to row_style
         row_data.push([column_title, new_value]);   // Push new value to row_data
     });
-    return { row_data: row_data as String[][], row_style: row_style as String[] };
+    return { row_data: row_data as string[][], row_style: row_style as string[] };
 }
 
-function cellScript(sheet, column_title, value, row_index, row_data, data, prev_row): {value: string, style: string} {
+function cellScript(sheet: string, column_title: string, value: string, row_data: string[][], prev_row: string[][]) {
     let style = ''; // initialize style
 
     const row_data_dict = listToDict(row_data); // snapshot of the row_data {column_title: cell_value}
@@ -71,12 +73,16 @@ function cellScript(sheet, column_title, value, row_index, row_data, data, prev_
         if (column_title.toLowerCase() === 'description'){
             // Auto italicize the description
             let emptyCells = 0;
-            row_data.forEach(([cell_title, cell_value], index) => {
+            row_data.forEach(([cell_title, cell_value]) => {
                 cell_title = cell_title.toLowerCase();
                 if (cell_title.toLowerCase() === 'debit' || cell_title.toLowerCase() === 'credit' || cell_title.toLowerCase() === 'balance') {
-                    cell_value = toDigit(cell_value);
+<<<<<<< HEAD
+                    cell_value = toDigit(cell_value).toString().replace(/0/g, '');
+=======
+                    cell_value = toDigit(cell_value).toString();
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
                 }
-                if ((cell_value === '' || cell_value === ' ' || cell_value === 0) && cell_title !== 'description') {
+                if ((cell_value === '' || cell_value === ' ') && cell_title !== 'description') {
                     emptyCells++;
                 }
             });
@@ -84,11 +90,11 @@ function cellScript(sheet, column_title, value, row_index, row_data, data, prev_
                 style = 'italic';
             }
             // Auto tab the description
-            const creditCell = toDigit(row_data_dict['CREDIT']);
-            if (creditCell && value[0] !== '\t') {
-                value = '\t' + value;
+            const creditCell = toDigit(row_data_dict['CREDIT']).toString();
+            if (creditCell !== '0' && value[0] !== '\t') {
+                value = '\t' + value.trim();
             } 
-            else {
+            else if(creditCell === '0'){
                 value = value.replace('\t', '');
             }
         }
@@ -97,11 +103,11 @@ function cellScript(sheet, column_title, value, row_index, row_data, data, prev_
 // -------------------------- Scripts for General Ledger --------------------------------
     if (sheet === 'General Ledger') {
         if (column_title.toLowerCase() === 'balance'){
-            const prev_balance = toDigit(listToDict(prev_row)['BALANCE'] || 0);
+            const prev_balance = toDigit(listToDict(prev_row)['BALANCE']);
             // Calculate the balance
             let debit = toDigit(row_data_dict['DEBIT']) || 0;
             let credit = toDigit(row_data_dict['CREDIT']) || 0;
-            value = (debit - credit) + prev_balance;
+            value = ((debit - credit) + prev_balance).toString();
             value = autoComma(value);
         }
     }
@@ -112,7 +118,7 @@ function cellScript(sheet, column_title, value, row_index, row_data, data, prev_
         Input: value, column_title
         Output: updated value
 */
-function blankRowSolution(value, column_title) {
+function blankRowSolution(value: string, column_title: string) {
     value = value.toString() || '';
     if (column_title === 'Account No.' || column_title === 'Title') {
         return value;
@@ -132,7 +138,7 @@ function blankRowSolution(value, column_title) {
         Input: string
         Output: integer
 */
-function toDigit(value){
+function toDigit(value: string){
     if (!value) {
         return 0;
     }
@@ -143,9 +149,14 @@ function toDigit(value){
         Input: value
         Output: value with commas
 */
-function autoComma(value){
-    value = toDigit(value) || '';
+function autoComma(value: string){
+<<<<<<< HEAD
+    let digits = toDigit(value);
+    value = digits.toLocaleString();
+=======
+    value = (toDigit(value)).toString() || '';
     value = value.toLocaleString();
+>>>>>>> ac3f54320442ceecccc7fa1199d1d7ed160404e3
     return value;
 }
 /*  Auto P/R function
@@ -153,7 +164,7 @@ function autoComma(value){
         Input: value (from description), row_index
         Output: updated value of P/R
 */
-function autoPR(value, data){
+function autoPR(value: string, data: dataType){
     if (!value) {
         return '';
     }
@@ -166,7 +177,12 @@ function autoPR(value, data){
         Input: description
         Output: P/R value
 */
-function findPR(description, data){
+type dataType = {
+    [key: string]: {
+        [key: string]: any[][]
+    }
+};
+function findPR(description: string, data: dataType){
     if (!data) {
         return;
     }
@@ -187,8 +203,10 @@ function findPR(description, data){
         Input: 2d_list
         Output: dict
 */
-function listToDict(list){
-    let dict = {};
+type dictType = {[key: string]: string};
+
+function listToDict(list: string[][]){
+    let dict: dictType = {};
     if (!list) {
         return dict;
     }

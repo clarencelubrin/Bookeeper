@@ -35,6 +35,7 @@ declare global {
       off: (...args: Parameters<typeof ipcRenderer.off>) => void;
       send: (...args: Parameters<typeof ipcRenderer.send>) => void;
       invoke: (...args: Parameters<typeof ipcRenderer.invoke>) => void;
+      removeListener: (...args: Parameters<typeof ipcRenderer.removeListener>) => void;
       minimizeWindow: () => void;
       maximizeWindow: () => void;
       closeWindow: () => void;

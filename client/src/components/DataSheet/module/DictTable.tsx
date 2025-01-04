@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext, createContext, useRef, Children } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { FunctionContext, PropContext } from './TableProvider';
 import HoverOptions from './HoverOptions';
 import { RootState } from '../../../Store';
 // UI imports
-import TableInput from '../../../ui/Inputs/TableInput';
-import { Table, TableHead, TableBody, HeaderRow, Row, HeaderCell, Cell } from '../../../ui/DataTable/Table';
-import { ButtonTrayContainer, AddButtonCircle, DeleteButtonCircle, AddTableButtonCircle } from '../../../ui/Buttons/TableButtons';
-import '../../../css/App.css';
+import TableInput from 'ui/Inputs/TableInput';
+import { Table, TableHead, TableBody, HeaderRow, Row, Cell } from 'ui/DataTable/Table';
+import { ButtonTrayContainer, AddButtonCircle, DeleteButtonCircle, AddTableButtonCircle } from 'ui/Buttons/TableButtons';
+import { TableDictCellProps, RowDictCellProps } from 'interfaces/DataSheet/DictTableInterfaces';
+import 'css/App.css';
 
 function DictTable(){
     const { deleteRow, addDataTable, addDictRow } = useContext(FunctionContext);
@@ -22,7 +23,7 @@ function DictTable(){
                 <TableDictHeader />
             </TableHead> 
             <TableBody>
-                {table_data.map((row, row_index) => (
+                {table_data.map((row: object, row_index: number) => (
                     <TableDictRow row={row} key={row_index} row_index={row_index}/>
                 ))}
             </TableBody>
@@ -41,7 +42,6 @@ function DictTable(){
 }
 
 function TableDictHeader() {
-    const { addDictRow } = useContext(FunctionContext);
     const { table_data } = useContext(PropContext);
     return (
         <HeaderRow className="text-center">
@@ -52,7 +52,11 @@ function TableDictHeader() {
         </HeaderRow>
     );
 }
-function TableDictRow({row, row_index}){
+type TableDictRowProps = {
+    row: object;
+    row_index: number;
+}
+function TableDictRow({row, row_index}: TableDictRowProps){
     const data = useSelector((state:RootState) => state.data)['present']['content'];
     const { setCheckedRows } = useContext(FunctionContext);
     const { sheet, table_index } = useContext(PropContext);
@@ -90,14 +94,7 @@ function TableDictRow({row, row_index}){
         </Row>
     );
 }
-interface TableDictCellProps {
-    cell: any;
-    row_index: number;
-    cell_index: number;
-    children: React.ReactNode;
-    inputClass?: string;
-    tdClass?: string;
-}
+
 function TableDictCell({ cell, row_index, cell_index, children, inputClass, tdClass }: TableDictCellProps) {
     const { updateDictCell, inputsRef, focusInput } = useContext(FunctionContext);
 
@@ -106,12 +103,14 @@ function TableDictCell({ cell, row_index, cell_index, children, inputClass, tdCl
     useEffect(() => {
         // Initialize the structure for inputsRef if it doesn’t exist
         if (!inputsRef.current) {
-            inputsRef.current = {};
+            inputsRef.current = [];
         }
         if (!inputsRef.current[row_index]) {
             inputsRef.current[row_index] = [];
         }
-        inputsRef.current[row_index][cell_index] = inputRef.current;
+        if (inputRef.current){
+            inputsRef.current[row_index][cell_index] = inputRef.current;
+        }
     }, [row_index, cell_index]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -121,7 +120,7 @@ function TableDictCell({ cell, row_index, cell_index, children, inputClass, tdCl
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         console.log("key pressed");
-        if (e.key === 'Enter') {            
+        if (e.key === 'Enter' && inputsRef.current) {            
             if (cell_index === 1 && inputsRef.current[row_index + 1]) {
                 focusInput(row_index + 1, 0);
                 return;
@@ -141,31 +140,14 @@ function TableDictCell({ cell, row_index, cell_index, children, inputClass, tdCl
     );
 }
 
-interface RowDictCellProps {
-    cell: any;
-    row_index: number;
-    cell_index: number;
-    is_hover: boolean;
-    is_checked: boolean;
-    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-    inputClass?: string;
-    tdClass?: string;
-}
-
-function RowDictCell({ cell, row_index, cell_index, is_hover, is_checked, setIsChecked, inputClass, tdClass }: RowDictCellProps){
+function RowDictCell({ cell, row_index, cell_index, is_hover, is_checked, setIsChecked }: RowDictCellProps){
     const { addDictRow } = useContext(FunctionContext);
    
-    // Handle hover events
-    const [is_hovered, setIsHovered] = useState(false);
-    const handleMouseEnter = () => setIsHovered(true);
-    const handleMouseLeave = () => setIsHovered(false);
     return(
         <TableDictCell cell={cell} key={cell_index} cell_index={cell_index} row_index={row_index}>
             {cell_index === 0 && 
             <HoverOptions is_hovered={is_hover} row_index={row_index} is_checked={is_checked} addRow={addDictRow} setIsChecked={setIsChecked}
                 absolute_position='top-3 left-4'
-                // onMouseEnter={handleMouseEnter} 
-                // onMouseLeave={handleMouseLeave}
             />}
         </TableDictCell>
     )

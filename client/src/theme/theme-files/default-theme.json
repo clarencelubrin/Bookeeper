@@ -1,0 +1,16 @@
+{
+    "text": {
+        "TITLE": "Bookeeper",
+        "ALERT_SUCCESS": "Success!",
+        "ALERT_SUCCESS_VAR_1": "Success!",
+        "ALERT_SUCCESS_VAR_2": "Success!",
+        "ALERT_ERROR": "Error",
+        "ALERT_ERROR_VAR_1": "Error"
+    },
+    "styles": {
+        "primaryColor": "pink",
+        "secondaryColor": "violet",
+        "tertiaryColor": "purple"
+    }
+}
+

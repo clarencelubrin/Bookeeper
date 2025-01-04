@@ -9,6 +9,7 @@ const WindowControlButtons = () => {
     };
 
     const handleClose = () => {
+        window.ipcRenderer.send('api-fetch', {url: 'shutdown'});
         window.ipcRenderer.closeWindow();
     };
 

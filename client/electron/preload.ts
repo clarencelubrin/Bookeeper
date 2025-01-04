@@ -18,6 +18,10 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     const [channel, ...omit] = args
     return ipcRenderer.invoke(channel, ...omit)
   },
+  removeListener(...args: Parameters<typeof ipcRenderer.removeListener>) {
+    const [channel, func] = args;
+    return ipcRenderer.removeListener(channel, func);
+  },
   minimizeWindow(){
     return ipcRenderer.send('minimize-window')
   },
@@ -26,7 +30,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   },
   closeWindow(){
     return ipcRenderer.send('close-window')
-  }
+  },
   // You can expose other APTs you need here.
   // ...
 })
